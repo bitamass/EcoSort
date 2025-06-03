@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Waste Sorting Game</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f4f4f4;
+            text-align: center;
+            padding-top: 50px;
+        }
+        #gameCanvas {
+            border: 2px solid #333;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Waste Sorting Game</h1>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <p>Press A for Compost, B for Recycling, C for Trash, D for Hazardous Waste</p>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const items = [
+            { name: 'Half-eaten Apple', type: 'A' },  // Compost
+            { name: 'Plastic Bottle', type: 'B' },    // Recycling
+            { name: 'Chip Bag', type: 'C' },          // Trash
+            { name: 'Battery', type: 'D' }            // Hazardous
+        ];
+
+        let currentItem = randomItem();
+        let score = 0;
+        let y = 0;
+
+        function randomItem() {
+            return items[Math.floor(Math.random() * items.length)];
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#222';
+            ctx.font = '20px Arial';
+            ctx.fillText(`Sort this: ${currentItem.name}`, 100, y);
+            ctx.fillText(`Score: ${score}`, 10, 30);
+        }
+
+        function dropNextItem() {
+            currentItem = randomItem();
+            y = 0;
+        }
+
+        function gameLoop() {
+            y += 2;
+            if (y > canvas.height) {
+                dropNextItem();
+            }
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const guess = e.key.toUpperCase();
+            if (['A', 'B', 'C', 'D'].includes(guess)) {
+                if (guess === currentItem.type) {
+                    alert('Correct!');
+                    score++;
+                } else {
+                    alert('Wrong!');
+                }
+                dropNextItem();
+            }
+        });
+
+        gameLoop();
+    </script>
+
+</body>
+</html>
