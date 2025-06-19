@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoSort Challenge - Learn Waste Sorting</title>
+    <title>Seattle EcoSort Challenge</title>
     <style>
         * {
             margin: 0;
@@ -12,728 +12,1445 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
+            position: relative;
+            overflow-x: hidden;
+            padding: 1rem;
         }
 
-        .game-container {
+        .container {
+            max-width: 64rem;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Background styles */
+        .background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .background.level-1 {
+            background: linear-gradient(180deg, 
+                #87CEEB 0%, 
+                #87CEEB 25%, 
+                #B0E0E6 25%, 
+                #B0E0E6 50%, 
+                #98FB98 50%, 
+                #98FB98 75%, 
+                #228B22 75%, 
+                #228B22 100%
+            );
+            image-rendering: pixelated;
+        }
+
+        .background.level-2 {
+            background: linear-gradient(180deg, 
+                #87CEEB 0%, 
+                #87CEEB 40%, 
+                #4682B4 40%, 
+                #4682B4 65%, 
+                #F4A460 65%, 
+                #F4A460 85%, 
+                #D2B48C 85%, 
+                #D2B48C 100%
+            );
+            image-rendering: pixelated;
+        }
+
+        .background.level-3 {
+            background: linear-gradient(180deg, 
+                #87CEEB 0%, 
+                #87CEEB 30%, 
+                #B0E0E6 30%, 
+                #B0E0E6 60%, 
+                #E0F6FF 60%, 
+                #E0F6FF 100%
+            );
+            image-rendering: pixelated;
+        }
+
+        /* Card styles */
+        .card {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 1200px;
-            width: 95%;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: #333;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
         }
 
+        /* Banner */
+        .banner {
+            background: rgba(30, 64, 175, 0.9);
+            color: white;
+            text-align: center;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #1e40af;
+        }
+
+        .banner h1 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .banner p {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Header */
         .header {
             text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header p {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
-
-        .game-instructions {
-            background: rgba(52, 152, 219, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-        }
-
-        .game-instructions p {
-            color: #2c3e50;
-            font-size: 1rem;
-            margin: 5px 0;
+            margin-bottom: 2rem;
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            color: #2c3e50;
-        }
-
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
+            font-size: 2.25rem;
             font-weight: bold;
-            color: #2c3e50;
+            color: #374151;
+            margin-bottom: 0.5rem;
         }
 
-        .current-item {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
+        .header p {
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+
+        .location-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 2px solid;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .location-message.level-1 {
+            background: rgba(251, 191, 36, 0.9);
+            border-color: #eab308;
+            color: #92400e;
+        }
+
+        .location-message.level-2 {
+            background: rgba(96, 165, 250, 0.9);
+            border-color: #3b82f6;
+            color: #1e3a8a;
+        }
+
+        .location-message.level-3 {
+            background: rgba(74, 222, 128, 0.9);
+            border-color: #22c55e;
+            color: #14532d;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0.5rem;
+            padding: 1rem;
             text-align: center;
-            margin-bottom: 30px;
-            min-height: 100px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        /* Current Item */
+        .current-item {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .item-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .item-image {
+            width: 6rem;
+            height: 6rem;
+            margin: 0 auto 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid #e5e7eb;
+            background: linear-gradient(to bottom right, #f9fafb, #f3f4f6);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-size: 2.5rem;
+            cursor: move;
+            user-select: none;
+            transition: transform 0.2s;
+            padding: 0.25rem;
         }
 
-        .bins-container {
+        .item-image svg {
+            max-width: 100%;
+            max-height: 100%;
+            pointer-events: none;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+        }
+
+        .item-image:hover {
+            transform: scale(1.1);
+        }
+
+        .item-name {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-instruction {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        /* Bins */
+        .bins {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .bins {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
 
         .bin {
-            background: rgba(52, 152, 219, 0.1);
-            border: 3px solid transparent;
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            color: white;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 150px;
+            min-height: 8rem;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            color: #2c3e50;
+            justify-content: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            user-select: none;
         }
 
         .bin:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transform: scale(1.05);
         }
 
-        .bin.correct {
-            border-color: #4CAF50;
-            background: rgba(76, 175, 80, 0.3);
+        .bin.garbage {
+            background: #4b5563;
         }
 
-        .bin.incorrect {
-            border-color: #f44336;
-            background: rgba(244, 67, 54, 0.3);
+        .bin.garbage:hover {
+            background: #374151;
         }
 
-        .garbage { border-color: #757575; }
-        .recycling { border-color: #2196F3; }
-        .hazardous { border-color: #FF9800; }
-        .compost { border-color: #4CAF50; }
+        .bin.recycling {
+            background: #2563eb;
+        }
+
+        .bin.recycling:hover {
+            background: #1d4ed8;
+        }
+
+        .bin.compost {
+            background: #16a34a;
+        }
+
+        .bin.compost:hover {
+            background: #15803d;
+        }
+
+        .bin.hazardous {
+            background: #dc2626;
+        }
+
+        .bin.hazardous:hover {
+            background: #b91c1c;
+        }
 
         .bin-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
 
         .bin-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
         }
 
-        .bin-description {
-            font-size: 0.9rem;
+        .bin-subtitle {
+            font-size: 0.875rem;
             opacity: 0.8;
         }
 
-        .controls {
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            max-width: 32rem;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .modal-header {
             text-align: center;
-            margin-top: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: #6b7280;
+        }
+
+        .lesson-content {
+            margin-bottom: 1.5rem;
+        }
+
+        .lesson-item {
+            background: #dbeafe;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-bin {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-description {
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-tip {
+            font-size: 0.875rem;
+            color: #1d4ed8;
+            font-weight: 500;
+        }
+
+        .lesson-warning {
+            background: #fef2f2;
+            border-left: 4px solid #f87171;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .warning-title {
+            font-weight: 600;
+            color: #991b1b;
+            margin-bottom: 0.25rem;
+        }
+
+        .warning-text {
+            color: #b91c1c;
+            font-size: 0.875rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
         }
 
         .btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            border: 2px solid rgba(79, 172, 254, 0.3);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            border: none;
             cursor: pointer;
-            font-size: 1rem;
-            margin: 0 10px;
-            transition: all 0.3s ease;
-            font-weight: bold;
+            transition: all 0.2s;
         }
 
-        .btn:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        .btn-primary {
+            background: #16a34a;
+            color: white;
         }
 
+        .btn-primary:hover {
+            background: #15803d;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        /* Feedback */
         .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            z-index: 50;
             text-align: center;
-            margin: 20px 0;
-            font-size: 1.2rem;
+            max-width: 28rem;
+            color: white;
+        }
+
+        .feedback.success {
+            background: #16a34a;
+        }
+
+        .feedback.error {
+            background: #dc2626;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-icon {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+
+        .feedback-title {
+            font-size: 1.25rem;
             font-weight: bold;
-            min-height: 30px;
-            color: #2c3e50;
         }
 
-        .correct-feedback {
-            color: #4CAF50;
+        .feedback-message {
+            margin-bottom: 0.75rem;
         }
 
-        .incorrect-feedback {
-            color: #f44336;
+        .feedback-points {
+            font-size: 1.125rem;
+            font-weight: 600;
         }
 
-        .level-complete {
-            background: rgba(76, 175, 80, 0.9);
-            padding: 30px;
-            border-radius: 15px;
+        .level-up {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Reset button */
+        .reset-container {
             text-align: center;
-            margin: 20px 0;
+            margin-bottom: 2rem;
         }
 
-        .game-complete {
-            background: rgba(255, 215, 0, 0.9);
-            color: #333;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            margin: 20px 0;
+        .btn-reset {
+            background: #7c3aed;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
+        .btn-reset:hover {
+            background: #6d28d9;
+        }
+
+        /* Drag over effect */
+        .bin.drag-over {
+            background: rgba(255, 255, 255, 0.2) !important;
+            transform: scale(1.1) !important;
+        }
+
+        /* Hidden */
         .hidden {
-            display: none;
+            display: none !important;
         }
 
-        .progress-bar {
-            background: rgba(52, 152, 219, 0.2);
-            height: 10px;
-            border-radius: 5px;
-            margin: 20px 0;
-            overflow: hidden;
+        /* Simple info boxes */
+        .info-box {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            border-left: 4px solid;
         }
 
-        .progress-fill {
-            background: #4CAF50;
-            height: 100%;
-            transition: width 0.3s ease;
+        .info-box.green {
+            background: #f0fdf4;
+            border-color: #16a34a;
         }
 
-        @media (max-width: 768px) {
-            .game-container {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .current-item {
-                font-size: 1.4rem;
-            }
-            
-            .bins-container {
-                grid-template-columns: 1fr 1fr;
-                gap: 15px;
-                max-width: 400px;
-            }
-            
-            .bin {
-                padding: 15px;
-                min-height: 120px;
-            }
-            
-            .bin-icon {
-                font-size: 2.5rem;
-            }
-            
-            .bin-title {
-                font-size: 1.2rem;
-            }
+        .info-box.yellow {
+            background: #fefce8;
+            border-color: #eab308;
+        }
+
+        .info-box.red {
+            background: #fef2f2;
+            border-color: #dc2626;
+        }
+
+        .info-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-title.green {
+            color: #166534;
+        }
+
+        .info-title.yellow {
+            color: #a16207;
+        }
+
+        .info-title.red {
+            color: #991b1b;
+        }
+
+        .info-text {
+            font-size: 0.875rem;
+        }
+
+        .info-text.green {
+            color: #166534;
+        }
+
+        .info-text.yellow {
+            color: #a16207;
+        }
+
+        .info-text.red {
+            color: #b91c1c;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
+    <!-- Background -->
+    <div id="background" class="background level-1">
+        <svg id="background-svg" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.6;" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+            <!-- Background content will be generated by JavaScript -->
+        </svg>
+    </div>
+
+    <div class="container">
+        <!-- Banner -->
+        <div class="banner">
+            <h1>🏔️ Seattle EcoSort Challenge</h1>
+            <p>This game reflects waste sorting rules specific to Seattle, WA</p>
+        </div>
+
+        <!-- Header -->
         <div class="header">
-            <h1>🌍 EcoSort Challenge</h1>
-            <p>Learn proper waste sorting to protect our environment!</p>
-            <div class="game-instructions">
-                <p><strong>How to Play:</strong> Look at each item and click the correct bin where it belongs. You'll get instant feedback to help you learn!</p>
-                <p><strong>Goal:</strong> Get 100% correct in each level to advance! Master all 3 levels to become an EcoSort Expert! 🏆</p>
+            <h1>Seattle EcoSort Challenge 🌱</h1>
+            <p>Learn Seattle's waste sorting rules and help keep our city green!</p>
+            <div id="location-message" class="location-message level-1">
+                🏭 Gas Works Park needs your help! Sort the scattered waste correctly to clean up this iconic Seattle landmark! 🧹
             </div>
         </div>
 
-        <div class="game-info">
-            <div>Score: <span id="score">0</span></div>
-            <div>Items Left: <span id="items-left">50</span></div>
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div id="score" class="stat-value">0</div>
+                <div class="stat-label">Score</div>
+            </div>
+            <div class="stat-card">
+                <div id="streak" class="stat-value" style="color: #f97316;">0</div>
+                <div class="stat-label">Streak</div>
+            </div>
+            <div class="stat-card">
+                <div id="level" class="stat-value" style="color: #8b5cf6;">1</div>
+                <div class="stat-label">Level</div>
+            </div>
+            <div class="stat-card">
+                <div id="items-completed" class="stat-value" style="color: #10b981;">0</div>
+                <div class="stat-label">Items Sorted</div>
+            </div>
         </div>
 
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress"></div>
+        <!-- Current Item -->
+        <div id="current-item-container" class="current-item hidden">
+            <div class="item-card">
+                <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: #374151;">
+                    Sort this item according to Seattle rules:
+                </h2>
+                <div id="current-item" class="item-image" draggable="true"></div>
+                <div id="item-name" class="item-name"></div>
+                <div class="item-instruction">
+                    👆 Click and drag the image to the correct bin below ⬇️
+                </div>
+            </div>
         </div>
 
-        <div class="current-item" id="current-item">
-            Click "Start Level" to begin!
-        </div>
-
-        <div class="bins-container">
-            <div class="bin garbage" onclick="sortItem('garbage')">
+        <!-- Bins -->
+        <div class="bins">
+            <div class="bin garbage" data-type="garbage">
                 <div class="bin-icon">🗑️</div>
-                <div class="bin-title">GARBAGE</div>
-                <div class="bin-description">Non-recyclable waste</div>
+                <div class="bin-title">Garbage</div>
+                <div class="bin-subtitle">Non-recyclable waste</div>
             </div>
-            <div class="bin recycling" onclick="sortItem('recycling')">
+            <div class="bin recycling" data-type="recycling">
                 <div class="bin-icon">♻️</div>
-                <div class="bin-title">RECYCLING</div>
-                <div class="bin-description">Reusable materials</div>
+                <div class="bin-title">Recycling</div>
+                <div class="bin-subtitle">Clean recyclables</div>
             </div>
-            <div class="bin hazardous" onclick="sortItem('hazardous')">
-                <div class="bin-icon">⚠️</div>
-                <div class="bin-title">HAZARDOUS</div>
-                <div class="bin-description">Dangerous materials</div>
-            </div>
-            <div class="bin compost" onclick="sortItem('compost')">
+            <div class="bin compost" data-type="compost">
                 <div class="bin-icon">🌱</div>
-                <div class="bin-title">COMPOST</div>
-                <div class="bin-description">Organic waste</div>
+                <div class="bin-title">Food & Yard Waste</div>
+                <div class="bin-subtitle">Organic materials</div>
+            </div>
+            <div class="bin hazardous" data-type="hazardous">
+                <div class="bin-icon">☢️</div>
+                <div class="bin-title">Hazardous Waste</div>
+                <div class="bin-subtitle">Special handling required</div>
             </div>
         </div>
 
-        <div class="feedback" id="feedback"></div>
-
-        <div class="controls">
-            <button class="btn" onclick="startLevel()">Start Level</button>
-            <button class="btn" onclick="nextLevel()">Next Level</button>
-            <button class="btn" onclick="showInstructions()">Instructions</button>
+        <!-- Reset Button -->
+        <div class="reset-container">
+            <button id="reset-btn" class="btn btn-reset">
+                🔄 Reset Game
+            </button>
         </div>
 
-        <div class="game-info" style="margin-top: 20px; justify-content: center;">
-            <div style="font-size: 1.4rem; font-weight: bold; color: #2c3e50;">Level: <span id="current-level">1</span></div>
+        <!-- Instructions -->
+        <div class="card">
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: #374151; margin-bottom: 0.75rem;">How to Play:</h3>
+            <ul style="color: #6b7280; list-style: none;">
+                <li style="margin-bottom: 0.5rem;">• <strong>📚 Learn First:</strong> Read the lesson before each level to learn Seattle's expert-verified rules</li>
+                <li style="margin-bottom: 0.5rem;">• <strong>🖱️ Drag and drop:</strong> All item images can be dragged to the correct bin (click and hold, then drag)</li>
+                <li style="margin-bottom: 0.5rem;">• <strong>🗂️ Four bins:</strong> Recycling (blue), Food & Yard Waste (green), Garbage (gray), Hazardous Waste (red)</li>
+                <li style="margin-bottom: 0.5rem;">• <strong>⚠️ Watch for critical details:</strong> Hazardous materials, contamination types, processing limitations</li>
+                <li style="margin-bottom: 0.5rem;">• <strong>🎯 Each item appears ONCE:</strong> No repeats - every item is unique throughout the entire game</li>
+                <li style="margin-bottom: 0.5rem;">• <strong>🏞️ Seattle Locations:</strong> Progress through iconic Seattle locations as you learn - Gas Works Park (lots of litter), Lake Union Beach (some litter), downtown Seattle with Space Needle (clean and beautiful)!</li>
+                <li style="margin-bottom: 0.5rem;">• Complete Level 1 (14 items), Level 2 (15 items), Level 3 (15 items) = <strong>44 total comprehensive items</strong></li>
+                <li>• Build streaks for bonus points and learn rules that surprise even Seattle waste management professionals!</li>
+            </ul>
+            
+            <div class="info-box green">
+                <h4 class="info-title green">✅ Complete Expert-Reviewed Item Set:</h4>
+                <p class="info-text green">
+                    Now features 44 comprehensive items with UNIQUE emojis and NO REPEATS! Each item appears exactly once per game.
+                    Experience authentic Seattle locations: Gas Works Park (Level 1), Lake Union Beach (Level 2), and downtown Seattle with Space Needle (Level 3)!
+                </p>
+            </div>
         </div>
+    </div>
 
-        <div id="level-complete" class="level-complete hidden">
-            <h2 id="level-complete-title">🎉 Level Complete!</h2>
-            <p id="level-complete-message">Great job! You've mastered this level.</p>
-            <p>Final Score: <span id="level-score"></span></p>
-            <p id="next-level-instruction"></p>
+    <!-- Modal (initially hidden) -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title"></h2>
+                <p id="modal-subtitle" class="modal-subtitle"></p>
+            </div>
+            <div id="modal-body" class="lesson-content"></div>
+            <div class="modal-buttons">
+                <button id="start-btn" class="btn btn-primary">Start Game!</button>
+                <button id="skip-btn" class="btn btn-secondary hidden">Skip Lesson</button>
+            </div>
         </div>
+    </div>
 
-        <div id="game-complete" class="game-complete hidden">
-            <h2>🏆 Congratulations!</h2>
-            <p>You've completed all levels and become an EcoSort Expert!</p>
-            <p>Total Score: <span id="final-score"></span></p>
-            <p>You're now ready to help others sort waste properly and protect our environment!</p>
+    <!-- Feedback (initially hidden) -->
+    <div id="feedback" class="feedback hidden">
+        <div class="feedback-header">
+            <div id="feedback-icon" class="feedback-icon"></div>
+            <span id="feedback-title" class="feedback-title"></span>
+        </div>
+        <p id="feedback-message" class="feedback-message"></p>
+        <p id="feedback-points" class="feedback-points hidden"></p>
+        <p id="level-up" class="level-up hidden"></p>
+        <div id="game-complete" class="hidden">
+            <p style="font-size: 1.125rem; font-weight: bold; margin: 0.75rem 0;">
+                Final Score: <span id="final-score"></span> points!
+            </p>
+            <button id="play-again-btn" class="btn" style="background: white; color: #16a34a;">
+                Play Again! 🔄
+            </button>
         </div>
     </div>
 
     <script>
-        // Game data - 3 levels: Beginner, Intermediate, and Advanced
-        const gameData = {
-            1: { // Beginner Level
-                name: "Beginner",
-                items: [
-                    {name: "Plastic Water Bottle", category: "recycling", emoji: "🍼", explanation: "Clean plastic bottles can be recycled"},
-                    {name: "Banana Peel", category: "compost", emoji: "🍌", explanation: "Fruit peels decompose naturally"},
-                    {name: "AA Battery", category: "hazardous", emoji: "🔋", explanation: "Batteries contain toxic chemicals"},
-                    {name: "Candy Wrapper", category: "garbage", emoji: "🍬", explanation: "Mixed material wrappers can't be recycled"},
-                    {name: "Aluminum Can", category: "recycling", emoji: "🥤", explanation: "Aluminum is highly recyclable"},
-                    {name: "Coffee Grounds", category: "compost", emoji: "☕", explanation: "Coffee grounds are great for composting"},
-                    {name: "Used Tissue", category: "garbage", emoji: "🤧", explanation: "Contaminated paper products go to garbage"},
-                    {name: "Glass Jar", category: "recycling", emoji: "🫙", explanation: "Clean glass containers are recyclable"},
-                    {name: "Apple Core", category: "compost", emoji: "🍎", explanation: "Fruit waste decomposes naturally"},
-                    {name: "Chip Bag", category: "garbage", emoji: "🍟", explanation: "Metallized plastic bags aren't recyclable"},
-                    {name: "Pizza Box (Clean)", category: "recycling", emoji: "📦", explanation: "Clean cardboard pizza boxes can be recycled"},
-                    {name: "Pizza Box (Greasy)", category: "garbage", emoji: "🍕", explanation: "Grease-stained cardboard can't be recycled"},
-                    {name: "Eggshells", category: "compost", emoji: "🥚", explanation: "Eggshells add calcium to compost"},
-                    {name: "Plastic Bag", category: "garbage", emoji: "🛍️", explanation: "Most plastic bags aren't recyclable in regular bins"},
-                    {name: "Newspaper", category: "recycling", emoji: "📰", explanation: "Clean paper is easily recyclable"}
-                ]
+        // Game state
+        let gameState = {
+            score: 0,
+            streak: 0,
+            level: 1,
+            itemsCompleted: 0,
+            currentItem: null,
+            completedItems: new Set(),
+            gameStarted: false,
+            showingLesson: true
+        };
+
+        // Level lessons
+        const levelLessons = {
+            1: {
+                title: "Level 1: Basic Sorting",
+                subtitle: "Learn the four bins and easy items",
+                content: [
+                    {
+                        bin: "♻️ Recycling (Blue Bin)",
+                        description: "Clean containers only! Plastic bottles (#1-7), glass jars, aluminum cans, clean paper.",
+                        tip: "🧼 Remember: Rinse out containers before recycling!"
+                    },
+                    {
+                        bin: "🌱 Food & Yard Waste (Green Bin)", 
+                        description: "All food scraps, fruit peels, vegetable trimmings. This becomes rich compost!",
+                        tip: "🍎 Fun fact: Even moldy food goes here, not garbage!"
+                    },
+                    {
+                        bin: "🗑️ Garbage (Black Bin)",
+                        description: "Non-recyclable items like used tissues, broken items, contaminated materials.",
+                        tip: "⚠️ When in doubt, garbage is often the safest choice."
+                    },
+                    {
+                        bin: "☢️ Hazardous Waste (Red Bin)",
+                        description: "Batteries, electronics, paint, chemicals, CFLs. Need special handling for safety.",
+                        tip: "🚨 Never put hazardous items in regular bins—they can harm workers and environment!"
+                    }
+                ],
+                commonMistakes: "Common mistake: Putting dirty containers in recycling instead of cleaning them first!"
             },
-            2: { // Intermediate Level
-                name: "Intermediate",
-                items: [
-                    {name: "LED Light Bulb", category: "hazardous", emoji: "💡", explanation: "Electronic components need special disposal"},
-                    {name: "Vegetable Scraps", category: "compost", emoji: "🥕", explanation: "Vegetable waste is perfect for composting"},
-                    {name: "Broken Glass", category: "hazardous", emoji: "🔻", explanation: "Sharp broken glass needs careful disposal"},
-                    {name: "Cardboard Box", category: "recycling", emoji: "📦", explanation: "Clean cardboard is highly recyclable"},
-                    {name: "Tea Bag", category: "compost", emoji: "🍵", explanation: "Most tea bags are compostable"},
-                    {name: "Smartphone", category: "hazardous", emoji: "📱", explanation: "Electronics contain valuable but toxic materials"},
-                    {name: "Yard Trimmings", category: "compost", emoji: "🌿", explanation: "Grass and leaves compost well"},
-                    {name: "Styrofoam Container", category: "garbage", emoji: "📦", explanation: "Styrofoam isn't recyclable in most areas"},
-                    {name: "Wine Bottle", category: "recycling", emoji: "🍷", explanation: "Glass bottles are infinitely recyclable"},
-                    {name: "Motor Oil", category: "hazardous", emoji: "🛢️", explanation: "Used oil must be disposed of properly"},
-                    {name: "Food-stained Paper Plate", category: "garbage", emoji: "🍽️", explanation: "Contaminated paper products go to garbage"},
-                    {name: "Dryer Lint", category: "compost", emoji: "🧵", explanation: "Natural fiber lint can be composted"},
-                    {name: "Prescription Medication", category: "hazardous", emoji: "💊", explanation: "Drugs can contaminate water supplies"},
-                    {name: "Clean Aluminum Foil", category: "recycling", emoji: "📄", explanation: "Clean foil can be recycled"},
-                    {name: "Pet Waste", category: "garbage", emoji: "🐕", explanation: "Animal waste spreads disease in compost"}
-                ]
+            2: {
+                title: "Level 2: Seattle-Specific Rules & Hazardous Items", 
+                subtitle: "Learn what makes Seattle different + safety items",
+                content: [
+                    {
+                        bin: "🍕 Food-Soiled Paper → Compost!",
+                        description: "Cedar Grove accepts food-soiled paper including greasy pizza boxes in compost.",
+                        tip: "🌟 Food-soiled is OK for compost, but chemical-soiled paper goes to garbage!"
+                    },
+                    {
+                        bin: "🔋 CFLs → Hazardous Waste!",
+                        description: "Compact fluorescent bulbs contain mercury and need special disposal—$5 pickup or free drop-off.",
+                        tip: "💡 Most light bulbs (LED, incandescent) go to garbage, but CFLs are hazardous!"
+                    },
+                    {
+                        bin: "🥄 Steel Spoon → Consider Donating!",
+                        description: "Metal cutlery is too small for recycling machines. Better to donate reusable items than dispose.",
+                        tip: "♻️ Most steel spoons don't need disposal—donate to extend their life!"
+                    }
+                ],
+                commonMistakes: "Common mistake: Assuming all similar items have the same rules—usage, contamination, and safety matter!"
             },
-            3: { // Advanced Level
-                name: "Advanced",
-                items: [
-                    {name: "Computer Monitor", category: "hazardous", emoji: "🖥️", explanation: "Contains lead and other toxic materials"},
-                    {name: "Moldy Bread", category: "compost", emoji: "🍞", explanation: "Moldy food is still compostable"},
-                    {name: "Ceramic Mug", category: "garbage", emoji: "☕", explanation: "Ceramics don't melt at recycling temperatures"},
-                    {name: "Steel Can", category: "recycling", emoji: "🥫", explanation: "Steel is magnetic and easily recyclable"},
-                    {name: "Paint Can (Empty)", category: "hazardous", emoji: "🎨", explanation: "Paint residue is toxic"},
-                    {name: "Nutshells", category: "compost", emoji: "🥜", explanation: "Hard shells decompose slowly but surely"},
-                    {name: "Ink Cartridge", category: "hazardous", emoji: "🖨️", explanation: "Contains chemicals and plastics"},
-                    {name: "Wax Paper", category: "garbage", emoji: "📄", explanation: "Wax coating prevents recycling"},
-                    {name: "Hair Clippings", category: "compost", emoji: "💇", explanation: "Natural hair decomposes well"},
-                    {name: "Compact Fluorescent Bulb", category: "hazardous", emoji: "💡", explanation: "Contains mercury"},
-                    {name: "Car Battery", category: "hazardous", emoji: "🔋", explanation: "Contains lead and acid"},
-                    {name: "Sawdust", category: "compost", emoji: "🪵", explanation: "Untreated wood waste composts well"},
-                    {name: "Thermal Receipt Paper", category: "garbage", emoji: "🧾", explanation: "Thermal coating contains BPA"},
-                    {name: "Steel Wool", category: "garbage", emoji: "🧽", explanation: "Fine metal fibers jam recycling equipment"},
-                    {name: "X-ray Film", category: "hazardous", emoji: "🩻", explanation: "Contains silver and chemicals"}
-                ]
+            3: {
+                title: "Level 3: Complex Decisions & Hazardous Materials",
+                subtitle: "Master the most challenging sorting decisions", 
+                content: [
+                    {
+                        bin: "📱 Electronics → Hazardous Waste",
+                        description: "Phones, computers contain toxic materials and valuable metals. Need certified e-waste recycling.",
+                        tip: "🔋 Electronics often contain batteries too—double reason for hazardous waste!"
+                    },
+                    {
+                        bin: "🎨 Paint & Chemicals → Hazardous Waste",
+                        description: "Paint, cleaners, pesticides can contaminate groundwater. Never pour down drains.",
+                        tip: "🌊 Protect Seattle's water—hazardous liquids need special treatment!"
+                    },
+                    {
+                        bin: "🧢 Size Rules & Processing Limits",
+                        description: "Bottle caps under 3\", wire hangers, shredded paper—size and processing matter.",
+                        tip: "⚙️ Processing equipment has limitations—not everything that seems recyclable can be processed!"
+                    }
+                ],
+                commonMistakes: "Common mistake: Assuming material type determines disposal—safety, contamination, and processing limitations matter more!"
             }
         };
 
-        // Additional items for variety (expanding to 300+ items total)
-        const additionalItems = [
-            // More Recycling items
-            {name: "Tin Can", category: "recycling", emoji: "🥫", explanation: "Metal cans are highly recyclable"},
-            {name: "Plastic Yogurt Container", category: "recycling", emoji: "🥛", explanation: "Clean plastic containers are recyclable"},
-            {name: "Magazine", category: "recycling", emoji: "📖", explanation: "Glossy paper is recyclable"},
-            {name: "Cereal Box", category: "recycling", emoji: "📦", explanation: "Cardboard packaging is recyclable"},
-            {name: "Glass Bottle", category: "recycling", emoji: "🍼", explanation: "Glass is infinitely recyclable"},
-            {name: "Paper Bag", category: "recycling", emoji: "📄", explanation: "Clean paper bags are recyclable"},
-            {name: "Plastic Bottle Cap", category: "recycling", emoji: "🔘", explanation: "Small plastic caps are now recyclable"},
-            {name: "Steel Spoon", category: "recycling", emoji: "🥄", explanation: "Metal utensils are recyclable"},
-            {name: "Wire Coat Hanger", category: "recycling", emoji: "🪝", explanation: "Metal hangers are recyclable"},
-            {name: "Phone Book", category: "recycling", emoji: "📞", explanation: "Bulk paper is recyclable"},
-            {name: "Milk Carton", category: "recycling", emoji: "🥛", explanation: "Paper cartons are recyclable"},
-            {name: "Plastic Shampoo Bottle", category: "recycling", emoji: "🧴", explanation: "Clean plastic bottles are recyclable"},
-            {name: "Metal Lid", category: "recycling", emoji: "🥫", explanation: "Metal lids can be recycled with cans"},
-            {name: "Office Paper", category: "recycling", emoji: "📄", explanation: "Clean office paper is highly recyclable"},
-            {name: "Juice Box", category: "recycling", emoji: "🧃", explanation: "Many juice boxes are now recyclable"},
-            {name: "Copper Wire", category: "recycling", emoji: "🔌", explanation: "Copper is valuable for recycling"},
-            {name: "Plastic Food Container", category: "recycling", emoji: "📦", explanation: "Clean plastic containers are recyclable"},
-            {name: "Glass Pickle Jar", category: "recycling", emoji: "🫙", explanation: "Glass jars are infinitely recyclable"},
-            {name: "Aluminum Pie Plate", category: "recycling", emoji: "🥧", explanation: "Aluminum is highly recyclable"},
-            {name: "Wrapping Paper", category: "recycling", emoji: "🎁", explanation: "Plain wrapping paper can be recycled"},
+        // Waste items data (simplified for HTML)
+        const wasteItems = [
+            // Level 1 - Basic items (14 items)
+            { id: 1, name: 'Clean Plastic Water Bottle (#1-7)', type: 'recycling', emoji: '🍶', level: 1, explanation: 'Correct! Clean plastic bottles go in recycling—just rinse first!', wrongExplanation: 'Oops! Clean plastic bottles go in recycling, not garbage or compost.' },
+            { id: 2, name: 'Apple Core', type: 'compost', emoji: '🍎', level: 1, explanation: 'Correct! All fruit scraps become nutrient-rich compost in Seattle!', wrongExplanation: 'Oops! Food scraps like apple cores go in compost, not garbage or recycling.' },
+            { id: 3, name: 'Used Tissue', type: 'garbage', emoji: '🤧', level: 1, explanation: 'Correct! Used tissues are contaminated—they always go to garbage.', wrongExplanation: 'Oops! Used tissues are contaminated and can\'t be recycled or composted.' },
+            { id: 4, name: 'Clean Newspaper', type: 'recycling', emoji: '📰', level: 1, explanation: 'Correct! Clean paper gets recycled into new products!', wrongExplanation: 'Oops! Clean paper like newspapers goes in recycling.' },
+            { id: 5, name: 'Aluminum Can', type: 'recycling', emoji: '🥫', level: 1, explanation: 'Correct! Aluminum cans are 100% recyclable and use 95% less energy than new cans!', wrongExplanation: 'Oops! Aluminum cans are super valuable for recycling—they\'re worth their weight in gold!' },
+            { id: 6, name: 'Banana Peel', type: 'compost', emoji: '🍌', level: 1, explanation: 'Correct! Even brown, mushy fruit scraps make excellent compost!', wrongExplanation: 'Oops! All fruit peels go in compost, even if they look gross!' },
+            { id: 7, name: 'Clean Glass Jar', type: 'recycling', emoji: '🫙', level: 1, explanation: 'Correct! Glass can be recycled infinitely—just remove the lid first!', wrongExplanation: 'Oops! Clean glass containers go in recycling—they can be recycled forever!' },
+            { id: 8, name: 'Clean Aluminum Pie Plate', type: 'recycling', emoji: '', level: 1, explanation: 'Correct! Clean aluminum pie plates are recyclable!', wrongExplanation: 'Oops! Clean aluminum pie plates go in recycling.' },
+            { id: 9, name: 'Milk Carton (Clean)', type: 'recycling', emoji: '', level: 1, explanation: 'Correct! Clean milk cartons are recyclable in Seattle!', wrongExplanation: 'Oops! Clean milk cartons go in recycling, not garbage or compost.' },
+            { id: 10, name: 'Meat & Bones', type: 'compost', emoji: '🥩', level: 1, explanation: 'Correct! Meat and bones are compostable in Seattle\'s curbside program!', wrongExplanation: 'Oops! Meat and bones go in compost—freeze odorous items until collection day.' },
+            { id: 11, name: 'Carbonless Paper', type: 'recycling', emoji: '📋', level: 1, explanation: 'Correct! Carbonless paper is recyclable!', wrongExplanation: 'Oops! Carbonless paper goes in recycling.' },
+            { id: 12, name: 'Flowers (No Plastic)', type: 'compost', emoji: '🌺', level: 1, explanation: 'Correct! Flowers are compostable—just remove plastic ties and cellophane!', wrongExplanation: 'Oops! Flowers go in compost, but remove any plastic wrapping first.' },
+            { id: 13, name: 'Paper Towel (Unused)', type: 'compost', emoji: '', level: 1, explanation: 'Correct! Clean paper towels can be composted!', wrongExplanation: 'Oops! Unused paper towels go in compost, not garbage or recycling.' },
+            { id: 14, name: 'Envelope (Clean)', type: 'recycling', emoji: '✉️', level: 1, explanation: 'Correct! Clean envelopes are recyclable paper!', wrongExplanation: 'Oops! Clean paper envelopes go in recycling.' },
             
-            // More Compost items
-            {name: "Orange Peels", category: "compost", emoji: "🍊", explanation: "Citrus peels compost well"},
-            {name: "Onion Skins", category: "compost", emoji: "🧅", explanation: "Vegetable peels are perfect for compost"},
-            {name: "Potato Peels", category: "compost", emoji: "🥔", explanation: "Root vegetable peels decompose quickly"},
-            {name: "Corn Husks", category: "compost", emoji: "🌽", explanation: "Plant materials make excellent compost"},
-            {name: "Watermelon Rinds", category: "compost", emoji: "🍉", explanation: "Fruit rinds add moisture to compost"},
-            {name: "Pumpkin", category: "compost", emoji: "🎃", explanation: "Large fruits compost well when chopped"},
-            {name: "Lettuce Leaves", category: "compost", emoji: "🥬", explanation: "Leafy greens decompose quickly"},
-            {name: "Grass Clippings", category: "compost", emoji: "🌱", explanation: "Fresh grass adds nitrogen to compost"},
-            {name: "Dead Flowers", category: "compost", emoji: "🥀", explanation: "Organic plant matter composts well"},
-            {name: "Wood Shavings", category: "compost", emoji: "🪵", explanation: "Natural wood adds carbon to compost"},
-            {name: "Fallen Leaves", category: "compost", emoji: "🍂", explanation: "Leaves are excellent brown compost material"},
-            {name: "Broccoli Stems", category: "compost", emoji: "🥦", explanation: "Vegetable scraps decompose well"},
-            {name: "Pear Core", category: "compost", emoji: "🍐", explanation: "Fruit cores add nutrients to compost"},
-            {name: "Celery Ends", category: "compost", emoji: "🥬", explanation: "Vegetable trimmings are perfect for compost"},
-            {name: "Avocado Pit", category: "compost", emoji: "🥑", explanation: "Hard pits decompose slowly but completely"},
-            {name: "Cucumber Peels", category: "compost", emoji: "🥒", explanation: "Vegetable peels break down quickly"},
-            {name: "Carrot Tops", category: "compost", emoji: "🥕", explanation: "Green vegetable parts add nitrogen"},
-            {name: "Strawberry Tops", category: "compost", emoji: "🍓", explanation: "Berry tops compost easily"},
-            {name: "Pine Needles", category: "compost", emoji: "🌲", explanation: "Acidic materials balance compost pH"},
-            {name: "Paper Towel (Unused)", category: "compost", emoji: "🧻", explanation: "Clean paper products can be composted"},
+            // Level 2 - Medium items (15 items)
+            { id: 15, name: 'Greasy Pizza Box', type: 'compost', emoji: '📦', level: 2, explanation: 'Correct! Seattle\'s special rule: Cedar Grove accepts food-soiled paper in compost!', wrongExplanation: 'Oops! In Seattle, greasy pizza boxes go in compost—this is different from other cities!' },
+            { id: 16, name: 'Coffee Grounds & Filter', type: 'compost', emoji: '', level: 2, explanation: 'Correct! Coffee grounds are amazing for compost—worms love them!', wrongExplanation: 'Oops! Coffee grounds and paper filters go in compost, not garbage.' },
+            { id: 17, name: 'Plastic Shopping Bag', type: 'garbage', emoji: '🛍️', level: 2, explanation: 'Correct! For curbside pickup, plastic bags go to garbage.', wrongExplanation: 'Oops! Plastic bags jam recycling machines. Take them to store drop-off bins instead!' },
+            { id: 18, name: 'Chip Bag', type: 'garbage', emoji: '🍟', level: 2, explanation: 'Correct! Chip bags are multi-layer packaging that goes to garbage.', wrongExplanation: 'Oops! Chip bags can\'t be recycled due to their foil lining.' },
+            { id: 19, name: 'Non-Metallic Wrapping Paper', type: 'recycling', emoji: '🎁', level: 2, explanation: 'Correct! Non-metallic wrapping paper can be recycled!', wrongExplanation: 'Oops! Plain wrapping paper (no foil/glitter) goes in recycling.' },
+            { id: 20, name: 'Small Bottle Cap (Loose)', type: 'garbage', emoji: '🔴', level: 2, explanation: 'Correct! Loose bottle caps under 3" go to garbage—they jam machines!', wrongExplanation: 'Oops! Small loose caps go to garbage. Only attach caps to bottles for recycling.' },
+            { id: 22, name: 'Pumpkin (No Paint/Candle)', type: 'compost', emoji: '🎃', level: 2, explanation: 'Correct! Natural pumpkins are compostable—just remove paint and candles!', wrongExplanation: 'Oops! Clean pumpkins go in compost, but painted ones go to garbage.' },
+            { id: 23, name: 'Wire Coat Hanger', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Wire hangers jam recycling machines and go to garbage.', wrongExplanation: 'Oops! Wire hangers tangle in recycling equipment—they go to garbage.' },
+            { id: 24, name: 'Plastic Food Container (Clean)', type: 'recycling', emoji: '🥡', level: 2, explanation: 'Correct! Clean plastic food containers are recyclable!', wrongExplanation: 'Oops! Clean plastic containers go in recycling.' },
+            { id: 25, name: 'Tissue Paper (No Tape)', type: 'compost', emoji: '🎀', level: 2, explanation: 'Correct! Tissue paper can be composted—short fibers are fine!', wrongExplanation: 'Oops! Clean tissue paper goes in compost, but remove tape first.' },
+            { id: 26, name: 'Cotton Balls', type: 'garbage', emoji: '☁️', level: 2, explanation: 'Correct! Cotton balls risk contamination—Cedar Grove doesn\'t accept them.', wrongExplanation: 'Oops! Cotton balls often have synthetic fibers or chemicals—they go to garbage.' },
+            { id: 27, name: 'Steel Wool', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Steel wool is too small and contaminated for recycling.', wrongExplanation: 'Oops! Steel wool tangles in machines and is usually contaminated—garbage only.' },
+            { id: 28, name: 'Shredded Paper', type: 'garbage', emoji: '📃', level: 2, explanation: 'Correct! Cedar Grove doesn\'t accept shredded paper—risk of plastic contamination.', wrongExplanation: 'Oops! Shredded paper goes to garbage—too much contamination risk for compost.' },
+            { id: 29, name: 'Battery', type: 'hazardous', emoji: '🔋', level: 2, explanation: 'Correct! Batteries contain toxic chemicals and need hazardous waste disposal!', wrongExplanation: 'Oops! Batteries are hazardous—never put in regular bins!' },
+            { id: 30, name: 'Paper Clips', type: 'garbage', emoji: '📎', level: 2, explanation: 'Consider reusing! Paper clips should be separated from paper and reused.', wrongExplanation: 'Paper clips should be removed from paper and reused rather than disposed of.' },
             
-            // More Hazardous items
-            {name: "Thermometer", category: "hazardous", emoji: "🌡️", explanation: "Contains mercury or other chemicals"},
-            {name: "Nail Polish", category: "hazardous", emoji: "💅", explanation: "Contains toxic solvents"},
-            {name: "Pesticide Container", category: "hazardous", emoji: "🧪", explanation: "Chemical residue is dangerous"},
-            {name: "Antifreeze", category: "hazardous", emoji: "🚗", explanation: "Highly toxic to animals and humans"},
-            {name: "Lighter Fluid", category: "hazardous", emoji: "🔥", explanation: "Flammable chemicals are hazardous"},
-            {name: "Pool Chemicals", category: "hazardous", emoji: "🏊", explanation: "Pool chemicals are corrosive"},
-            {name: "Old Fire Extinguisher", category: "hazardous", emoji: "🧯", explanation: "Contains pressurized chemicals"},
-            {name: "Propane Tank", category: "hazardous", emoji: "⛽", explanation: "Pressurized gas containers are dangerous"},
-            {name: "Medical Waste", category: "hazardous", emoji: "🩺", explanation: "Biological waste needs special handling"},
-            {name: "Fluorescent Tube", category: "hazardous", emoji: "💡", explanation: "Contains mercury vapor"},
-            {name: "Cleaning Chemicals", category: "hazardous", emoji: "🧽", explanation: "Household cleaners contain toxic substances"},
-            {name: "Old Tablet", category: "hazardous", emoji: "📱", explanation: "Electronic devices contain hazardous materials"},
-            {name: "Printer Toner", category: "hazardous", emoji: "🖨️", explanation: "Toner cartridges contain chemicals"},
-            {name: "Oven Cleaner", category: "hazardous", emoji: "🧽", explanation: "Caustic cleaners are hazardous"},
-            {name: "Drain Cleaner", category: "hazardous", emoji: "🚿", explanation: "Chemical drain cleaners are corrosive"},
-            {name: "Old Headphones", category: "hazardous", emoji: "🎧", explanation: "Electronic components need special disposal"},
-            {name: "Spot Remover", category: "hazardous", emoji: "🧽", explanation: "Chemical solvents are toxic"},
-            {name: "Rust Remover", category: "hazardous", emoji: "🔧", explanation: "Acid-based cleaners are dangerous"},
-            {name: "Wood Stain", category: "hazardous", emoji: "🪵", explanation: "Stains contain volatile organic compounds"},
-            {name: "Car Wax", category: "hazardous", emoji: "🚗", explanation: "Automotive chemicals need special disposal"},
-            
-            // More Garbage items
-            {name: "Bubble Wrap", category: "garbage", emoji: "📦", explanation: "Plastic film isn't recyclable curbside"},
-            {name: "Rubber Gloves", category: "garbage", emoji: "🧤", explanation: "Rubber products aren't recyclable"},
-            {name: "Tissue Paper", category: "garbage", emoji: "🎁", explanation: "Thin paper fibers are too short to recycle"},
-            {name: "Stickers", category: "garbage", emoji: "🏷️", explanation: "Adhesive materials contaminate recycling"},
-            {name: "Laminated Paper", category: "garbage", emoji: "📄", explanation: "Plastic coating prevents recycling"},
-            {name: "Carbon Paper", category: "garbage", emoji: "📄", explanation: "Chemical coating isn't recyclable"},
-            {name: "Photographs", category: "garbage", emoji: "📷", explanation: "Photo chemicals prevent recycling"},
-            {name: "Diaper", category: "garbage", emoji: "👶", explanation: "Sanitary products go to garbage"},
-            {name: "Cigarette Butt", category: "garbage", emoji: "🚬", explanation: "Filters contain toxic chemicals"},
-            {name: "Chewing Gum", category: "garbage", emoji: "🍬", explanation: "Synthetic materials don't decompose"},
-            {name: "Candy Bar Wrapper", category: "garbage", emoji: "🍫", explanation: "Metallized wrappers can't be recycled"},
-            {name: "Plastic Utensils", category: "garbage", emoji: "🍴", explanation: "Most plastic utensils aren't recyclable"},
-            {name: "Packing Peanuts", category: "garbage", emoji: "📦", explanation: "Styrofoam peanuts aren't recyclable"},
-            {name: "Duct Tape", category: "garbage", emoji: "🔧", explanation: "Adhesive tape can't be recycled"},
-            {name: "Bandages", category: "garbage", emoji: "🩹", explanation: "Medical adhesives go to garbage"},
-            {name: "Cat Litter", category: "garbage", emoji: "🐱", explanation: "Clay litter and waste go to garbage"},
-            {name: "Vacuum Bag", category: "garbage", emoji: "🏠", explanation: "Dust-filled bags go to garbage"},
-            {name: "Dryer Sheets", category: "garbage", emoji: "👕", explanation: "Chemical-treated sheets aren't recyclable"},
-            {name: "Toothbrush", category: "garbage", emoji: "🦷", explanation: "Mixed plastic materials can't be recycled"},
-            {name: "Q-tips", category: "garbage", emoji: "👂", explanation: "Small mixed-material items go to garbage"},
-            
-            // Additional items to reach 50 per level
-            {name: "Broken CD", category: "garbage", emoji: "💿", explanation: "CDs contain mixed materials that can't be recycled"},
-            {name: "Used Coffee Filter", category: "compost", emoji: "☕", explanation: "Paper filters and coffee grounds compost well"},
-            {name: "Shredded Paper", category: "recycling", emoji: "📄", explanation: "Most shredded paper can still be recycled"},
-            {name: "Old Mouse", category: "hazardous", emoji: "🖱️", explanation: "Computer peripherals contain electronic components"},
-            {name: "Pill Bottle", category: "recycling", emoji: "💊", explanation: "Clean plastic prescription bottles are recyclable"},
-            {name: "Moldy Cheese", category: "compost", emoji: "🧀", explanation: "Moldy dairy can be composted in small amounts"},
-            {name: "Fishing Line", category: "garbage", emoji: "🎣", explanation: "Synthetic fishing line doesn't decompose"},
-            {name: "Old Keyboard", category: "hazardous", emoji: "⌨️", explanation: "Electronic devices need special disposal"},
-            {name: "Meat Bones", category: "garbage", emoji: "🦴", explanation: "Bones attract pests and don't compost well at home"},
-            {name: "Wine Cork", category: "compost", emoji: "🍷", explanation: "Natural cork is compostable"},
-            {name: "Pizza Crust", category: "compost", emoji: "🍕", explanation: "Bread products decompose naturally"},
-            {name: "Staples", category: "recycling", emoji: "📎", explanation: "Small metal pieces are recyclable with paper"},
-            {name: "Latex Balloon", category: "garbage", emoji: "🎈", explanation: "Latex balloons pose environmental hazards"},
-            {name: "Ketchup Packet", category: "garbage", emoji: "🍅", explanation: "Small condiment packets can't be recycled"},
-            {name: "Old Sponge", category: "garbage", emoji: "🧽", explanation: "Synthetic sponges aren't biodegradable"},
-            {name: "Paper Napkin (Used)", category: "compost", emoji: "🍽️", explanation: "Used paper napkins can be composted"},
-            {name: "Aluminum Foil (Dirty)", category: "garbage", emoji: "📄", explanation: "Food-contaminated foil can't be recycled"},
-            {name: "Cotton Balls", category: "compost", emoji: "🤍", explanation: "Natural cotton is biodegradable"},
-            {name: "Plastic Wrap", category: "garbage", emoji: "📦", explanation: "Plastic film isn't recyclable in regular bins"},
-            {name: "Pencil Shavings", category: "compost", emoji: "✏️", explanation: "Wood shavings decompose naturally"}
+            // Level 3 - Hard items (15 items)
+            { id: 31, name: 'CD/DVD', type: 'garbage', emoji: '💿', level: 3, explanation: 'Correct! CDs and DVDs go to garbage—the plastic is not recyclable.', wrongExplanation: 'Oops! CDs and DVDs can\'t be recycled in regular bins—they go to garbage.' },
+            { id: 32, name: 'Styrofoam Container', type: 'garbage', emoji: '⬜', level: 3, explanation: 'Correct! Styrofoam isn\'t recyclable in Seattle despite recycling symbols.', wrongExplanation: 'Oops! Styrofoam looks recyclable but goes to garbage—can\'t be processed in Seattle.' },
+            { id: 33, name: 'Broken Glass (Wrapped)', type: 'garbage', emoji: '🔺', level: 3, explanation: 'Correct! Broken glass goes to garbage if safely wrapped—not hazardous waste.', wrongExplanation: 'Oops! Wrap broken glass safely and put in garbage—only whole glass recycles.' },
+            { id: 34, name: 'CFL Light Bulb', type: 'hazardous', emoji: '💡', level: 3, explanation: 'Correct! CFLs contain mercury and need hazardous waste disposal!', wrongExplanation: 'Oops! CFL bulbs have mercury—hazardous waste only! LED/incandescent go to garbage.' },
+            { id: 35, name: 'LED Light Bulb', type: 'garbage', emoji: '', level: 3, explanation: 'Correct! LED bulbs go to garbage—only CFLs are hazardous.', wrongExplanation: 'Oops! LED bulbs go to garbage. Only CFL bulbs need hazardous waste disposal.' },
+            { id: 36, name: 'Wood Stain', type: 'hazardous', emoji: '', level: 3, explanation: 'Correct! Wood stain contains chemicals that need hazardous waste disposal!', wrongExplanation: 'Oops! Wood stain is toxic—never put in regular bins or pour down drains!' },
+            { id: 37, name: 'Rust Remover', type: 'hazardous', emoji: '', level: 3, explanation: 'Correct! Rust remover is corrosive and needs hazardous waste disposal!', wrongExplanation: 'Oops! Chemical rust removers are hazardous—protect workers and environment!' },
+            { id: 38, name: 'Oven Cleaner (Aerosol)', type: 'hazardous', emoji: '', level: 3, explanation: 'Correct! Aerosol oven cleaners are toxic and pressurized—hazardous waste!', wrongExplanation: 'Oops! Aerosol cleaners are hazardous—chemicals plus pressure = special handling!' },
+            { id: 39, name: 'Motor Oil-Soaked Paper Towels', type: 'garbage', emoji: '🛢️', level: 3, explanation: 'Correct! Chemical-contaminated paper towels go to garbage, not compost.', wrongExplanation: 'Oops! Chemical contamination makes paper towels garbage—only food-soiled goes to compost.' },
+            { id: 40, name: 'Spot Remover (Aerosol)', type: 'hazardous', emoji: '🧴', level: 3, explanation: 'Correct! Aerosol spot removers contain toxic solvents—hazardous waste!', wrongExplanation: 'Oops! Solvent-based spot removers are hazardous chemicals!' },
+            { id: 42, name: 'Orange Prescription Bottle', type: 'garbage', emoji: '💊', level: 3, explanation: 'Correct! Orange prescription bottles are too brittle to recycle.', wrongExplanation: 'Oops! Orange/brown prescription bottles go to garbage—different plastic type.' },
+            { id: 43, name: 'Hair (Human/Pet)', type: 'garbage', emoji: '💇', level: 3, explanation: 'Correct! Cedar Grove doesn\'t accept hair—licensing restrictions.', wrongExplanation: 'Oops! Hair is compostable but Cedar Grove can\'t accept human/pet hair.' },
+            { id: 44, name: 'Pencil Shavings', type: 'garbage', emoji: '✏️', level: 3, explanation: 'Correct! Pencil shavings have paint and graphite—not compostable.', wrongExplanation: 'Oops! Paint and graphite make pencil shavings garbage, not compost.' },
+            { id: 45, name: 'Wine Corks', type: 'garbage', emoji: '🍾', level: 3, explanation: 'Correct! Cork contamination issues make them garbage-bound.', wrongExplanation: 'Oops! Natural vs synthetic cork contamination makes all corks garbage.' },
+            { id: 46, name: 'Waxed Paper', type: 'garbage', emoji: '📜', level: 3, explanation: 'Correct! Wax and plastic coatings make this garbage.', wrongExplanation: 'Oops! Waxed/coated papers have synthetic materials—they go to garbage.' }
         ];
 
-        // Distribute additional items across levels without repetition to reach 50 items per level
-        let distributedItems = [...additionalItems]; // Create a copy to avoid modifying original
-        let currentIndex = 0;
+        // Location messages
+        const locationMessages = {
+            1: {
+                text: "🏭 Gas Works Park needs your help! Sort the scattered waste correctly to clean up this iconic Seattle landmark! 🧹",
+                class: "level-1"
+            },
+            2: {
+                text: "🏖️ Lake Union's beautiful shoreline has some litter! Help clean up this popular Seattle beach! 🌊",
+                class: "level-2"
+            },
+            3: {
+                text: "🏙️ Perfect! Seattle's city center with the Space Needle is clean and beautiful thanks to your expertise! ✨",
+                class: "level-3"
+            }
+        };
 
-        for (let level = 1; level <= 3; level++) {
-            const itemsNeeded = 50 - gameData[level].items.length;
+        // Background generation functions
+        function createLevel1Background() {
+            return `
+                <g opacity="0.6">
+                    <rect x="800" y="200" width="15" height="80" fill="#708090"/>
+                    <rect x="820" y="180" width="20" height="100" fill="#778899"/>
+                    <rect x="845" y="190" width="18" height="90" fill="#708090"/>
+                    <rect x="870" y="160" width="25" height="120" fill="#778899"/>
+                </g>
+                <g>
+                    <rect x="200" y="200" width="40" height="200" fill="#696969"/>
+                    <rect x="190" y="190" width="60" height="20" fill="#778899"/>
+                    <rect x="300" y="280" width="25" height="120" fill="#696969"/>
+                </g>
+                <path d="M0 500 Q300 400 600 450 Q900 400 1200 480 L1200 800 L0 800 Z" fill="#7CFC00" opacity="0.8"/>
+                <rect x="150" y="470" width="12" height="20" fill="#C0C0C0" transform="rotate(15 156 480)"/>
+                <rect x="400" y="485" width="10" height="25" fill="#E6F3FF" transform="rotate(-20 405 497)"/>
+                <rect x="600" y="465" width="20" height="15" fill="#FFD700" transform="rotate(45 610 472)"/>
+                <rect x="250" y="490" width="25" height="18" fill="#F5F5F5" transform="rotate(-10 262 499)"/>
+                <rect x="750" y="475" width="12" height="18" fill="#8B4513" transform="rotate(30 756 484)"/>
+            `;
+        }
+
+        function createLevel2Background() {
+            return `
+                <g opacity="0.7">
+                    <rect x="100" y="150" width="20" height="120" fill="#708090"/>
+                    <rect x="125" y="130" width="25" height="140" fill="#778899"/>
+                    <rect x="155" y="140" width="22" height="130" fill="#708090"/>
+                </g>
+                <g opacity="0.8">
+                    <rect x="300" y="250" width="30" height="15" fill="#8B4513"/>
+                    <rect x="305" y="240" width="20" height="15" fill="#CD853F"/>
+                </g>
+                <path d="M0 300 Q200 295 400 300 Q600 305 800 300 Q1000 295 1200 300 L1200 520 L0 520 Z" fill="#4682B4" opacity="0.8"/>
+                <path d="M0 520 L1200 520 L1200 800 L0 800 Z" fill="#F4A460"/>
+                <rect x="200" y="560" width="10" height="25" fill="#E6F3FF" transform="rotate(20 205 572)"/>
+                <rect x="400" y="570" width="20" height="15" fill="#FFD700" transform="rotate(45 410 577)"/>
+                <path d="M450 200 Q455 195 460 200 Q465 195 470 200" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+            `;
+        }
+
+        function createLevel3Background() {
+            return `
+                <g>
+                    <rect x="580" y="500" width="40" height="20" fill="#C0C0C0"/>
+                    <rect x="598" y="200" width="4" height="285" fill="#696969"/>
+                    <ellipse cx="600" cy="165" rx="35" ry="12" fill="#E6E6FA"/>
+                    <circle cx="600" cy="138" r="3" fill="#FF0000"/>
+                </g>
+                <g>
+                    <rect x="300" y="150" width="35" height="180" fill="#4682B4"/>
+                    <rect x="350" y="180" width="30" height="150" fill="#708090"/>
+                    <rect x="450" y="160" width="40" height="170" fill="#4169E1"/>
+                    <rect x="720" y="170" width="32" height="160" fill="#483D8B"/>
+                </g>
+                <rect x="0" y="330" width="1200" height="470" fill="#696969"/>
+                <rect x="0" y="380" width="1200" height="420" fill="#228B22"/>
+                <g opacity="0.7">
+                    <ellipse cx="200" cy="80" rx="40" ry="20" fill="#FFFFFF"/>
+                    <ellipse cx="600" cy="100" rx="50" ry="25" fill="#FFFFFF"/>
+                </g>
+            `;
+        }
+
+        // SVG emoji generator for specific items
+        function generateSVGEmoji(itemId) {
+            const svgSize = 80;
+            let svgContent = '';
             
-            for (let i = 0; i < itemsNeeded && currentIndex < distributedItems.length; i++) {
-                gameData[level].items.push(distributedItems[currentIndex]);
-                currentIndex++;
+            switch(itemId) {
+                case 13: // Paper towel - Individual kitchen paper towel sheets
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <rect x="25" y="20" width="30" height="40" fill="#ffffff" stroke="#ddd" stroke-width="2" rx="3"/>
+                            <rect x="27" y="18" width="30" height="40" fill="#f8f8f8" stroke="#e0e0e0" stroke-width="1" rx="3"/>
+                            <rect x="29" y="16" width="30" height="40" fill="#f5f5f5" stroke="#e5e5e5" stroke-width="1" rx="3"/>
+                            <line x1="25" y1="30" x2="55" y2="30" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2"/>
+                            <line x1="27" y1="40" x2="57" y2="40" stroke="#ddd" stroke-width="1" stroke-dasharray="3,2"/>
+                            <line x1="29" y1="35" x2="59" y2="35" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="3,2"/>
+                            <circle cx="35" cy="25" r="1" fill="#e8e8e8" opacity="0.5"/>
+                            <circle cx="45" cy="45" r="1" fill="#e8e8e8" opacity="0.5"/>
+                            <circle cx="50" cy="28" r="1" fill="#e8e8e8" opacity="0.5"/>
+                            <text x="44" y="50" text-anchor="middle" font-size="5" fill="#ccc" font-weight="bold">KITCHEN</text>
+                        </svg>`;
+                    break;
+                    
+                case 8: // Aluminum pie plate - Ridged disposable aluminum plate
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <ellipse cx="40" cy="40" rx="32" ry="20" fill="#c0c0c0" stroke="#a0a0a0" stroke-width="2"/>
+                            <ellipse cx="40" cy="38" rx="28" ry="16" fill="#e8e8e8" stroke="#d0d0d0" stroke-width="1"/>
+                            <ellipse cx="40" cy="36" rx="22" ry="12" fill="#f0f0f0" stroke="#e0e0e0" stroke-width="1"/>
+                            <ellipse cx="40" cy="36" rx="18" ry="9" fill="none" stroke="#d8d8d8" stroke-width="0.5"/>
+                            <ellipse cx="40" cy="36" rx="14" ry="7" fill="none" stroke="#d8d8d8" stroke-width="0.5"/>
+                            <ellipse cx="40" cy="36" rx="10" ry="5" fill="none" stroke="#d8d8d8" stroke-width="0.5"/>
+                            <ellipse cx="35" cy="33" rx="8" ry="3" fill="#ffffff" opacity="0.6"/>
+                        </svg>`;
+                    break;
+                    
+                case 27: // Steel wool - Dense pad of steel fibers
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <ellipse cx="40" cy="40" rx="25" ry="15" fill="#778899" stroke="#556b7d" stroke-width="2"/>
+                            <g stroke="#606060" stroke-width="0.8" fill="none" opacity="0.8">
+                                <path d="M20 35 Q25 30 30 35 Q35 40 40 35 Q45 30 50 35 Q55 40 60 35"/>
+                                <path d="M18 37 Q23 32 28 37 Q33 42 38 37 Q43 32 48 37 Q53 42 58 37"/>
+                                <path d="M22 39 Q27 34 32 39 Q37 44 42 39 Q47 34 52 39 Q57 44 62 39"/>
+                                <path d="M19 41 Q24 36 29 41 Q34 46 39 41 Q44 36 49 41 Q54 46 59 41"/>
+                                <path d="M21 43 Q26 38 31 43 Q36 48 41 43 Q46 38 51 43 Q56 48 61 43"/>
+                                <path d="M17 45 Q22 40 27 45 Q32 50 37 45 Q42 40 47 45 Q52 50 57 45"/>
+                            </g>
+                            <g stroke="#708090" stroke-width="0.6" fill="none" opacity="0.9">
+                                <path d="M25 33 Q30 38 35 33 Q40 28 45 33 Q50 38 55 33"/>
+                                <path d="M23 36 Q28 41 33 36 Q38 31 43 36 Q48 41 53 36"/>
+                                <path d="M27 38 Q32 43 37 38 Q42 33 47 38 Q52 43 57 38"/>
+                                <path d="M24 40 Q29 45 34 40 Q39 35 44 40 Q49 45 54 40"/>
+                                <path d="M26 42 Q31 47 36 42 Q41 37 46 42 Q51 47 56 42"/>
+                            </g>
+                            <ellipse cx="35" cy="35" rx="3" ry="1.5" fill="#c0c0c0" opacity="0.7"/>
+                            <ellipse cx="45" cy="42" rx="2" ry="1" fill="#c0c0c0" opacity="0.7"/>
+                        </svg>`;
+                    break;
+                    
+                case 23: // Wire coat hanger - Triangular wire hanger
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <path d="M40 10 Q37 8 37 12 Q37 15 40 15" fill="none" stroke="#708090" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M40 15 L20 35 L20 40 L60 40 L60 35 Z" fill="none" stroke="#708090" stroke-width="3" stroke-linejoin="round"/>
+                            <line x1="20" y1="40" x2="60" y2="40" stroke="#708090" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="30" y1="25" x2="30" y2="27" stroke="#556b7d" stroke-width="1" opacity="0.7"/>
+                            <line x1="50" y1="25" x2="50" y2="27" stroke="#556b7d" stroke-width="1" opacity="0.7"/>
+                            <line x1="35" y1="40" x2="35" y2="42" stroke="#556b7d" stroke-width="1" opacity="0.7"/>
+                            <line x1="45" y1="40" x2="45" y2="42" stroke="#556b7d" stroke-width="1" opacity="0.7"/>
+                            <line x1="42" y1="17" x2="44" y2="19" stroke="#a0a0a0" stroke-width="1" opacity="0.8"/>
+                            <line x1="25" y1="38" x2="27" y2="38" stroke="#a0a0a0" stroke-width="1" opacity="0.8"/>
+                        </svg>`;
+                    break;
+                    
+                case 16: // Coffee grounds & filter - Cone-shaped filter with grounds
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <path d="M25 20 L55 20 L50 35 L30 35 Z" fill="#e8e8e8" stroke="#ccc" stroke-width="2"/>
+                            <path d="M30 22 L50 22 L47 45 L33 45 Z" fill="#ffffff" stroke="#ddd" stroke-width="2"/>
+                            <ellipse cx="40" cy="28" rx="8" ry="3" fill="#8b4513"/>
+                            <circle cx="37" cy="27" r="1" fill="#654321"/>
+                            <circle cx="43" cy="29" r="1" fill="#654321"/>
+                            <circle cx="40" cy="31" r="1" fill="#654321"/>
+                            <circle cx="35" cy="30" r="0.8" fill="#654321"/>
+                            <circle cx="45" cy="26" r="0.8" fill="#654321"/>
+                            <ellipse cx="40" cy="38" rx="6" ry="4" fill="#8b4513" opacity="0.7"/>
+                            <circle cx="38" cy="37" r="0.8" fill="#654321"/>
+                            <circle cx="42" cy="39" r="0.8" fill="#654321"/>
+                            <line x1="35" y1="22" x2="33" y2="45" stroke="#f0f0f0" stroke-width="1"/>
+                            <line x1="40" y1="22" x2="40" y2="45" stroke="#f0f0f0" stroke-width="1"/>
+                            <line x1="45" y1="22" x2="47" y2="45" stroke="#f0f0f0" stroke-width="1"/>
+                        </svg>`;
+                    break;
+                    
+                case 36: // Wood stain - Can with label and brush
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <rect x="28" y="25" width="24" height="35" fill="#8b4513" stroke="#654321" stroke-width="2" rx="2"/>
+                            <rect x="30" y="30" width="20" height="25" fill="#daa520" stroke="#b8860b" stroke-width="1" rx="1"/>
+                            <text x="40" y="38" text-anchor="middle" font-size="6" fill="#8b4513" font-weight="bold">WOOD</text>
+                            <text x="40" y="46" text-anchor="middle" font-size="6" fill="#8b4513" font-weight="bold">STAIN</text>
+                            <path d="M32 50 Q35 48 38 50 Q41 52 44 50 Q47 48 48 50" stroke="#cd853f" stroke-width="1" fill="none"/>
+                            <path d="M32 52 Q35 50 38 52 Q41 54 44 52 Q47 50 48 52" stroke="#cd853f" stroke-width="1" fill="none"/>
+                            <ellipse cx="40" cy="25" rx="12" ry="3" fill="#654321" stroke="#4a2c17" stroke-width="1"/>
+                            <rect x="52" y="20" width="3" height="25" fill="#8b4513" stroke="#654321" stroke-width="1"/>
+                            <ellipse cx="53.5" cy="18" rx="2.5" ry="3" fill="#daa520" stroke="#b8860b" stroke-width="1"/>
+                            <path d="M51 45 L51 48 M52 45 L52 49 M53 45 L53 48 M54 45 L54 49 M55 45 L55 48 M56 45 L56 49" stroke="#654321" stroke-width="1"/>
+                        </svg>`;
+                    break;
+                    
+                case 9: // Milk carton - Fold-top carton with MILK label
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <path d="M25 20 L25 55 Q25 60 30 60 L50 60 Q55 60 55 55 L55 20 L45 10 L35 10 Z" 
+                                  fill="#ffffff" stroke="#ddd" stroke-width="2"/>
+                            <path d="M35 10 L40 5 L45 10" fill="#ffffff" stroke="#ddd" stroke-width="2"/>
+                            <rect x="30" y="25" width="20" height="15" fill="#4169e1" rx="2"/>
+                            <text x="40" y="35" text-anchor="middle" font-size="8" fill="white" font-weight="bold">MILK</text>
+                            <circle cx="32" cy="50" r="2" fill="#e0e0e0"/>
+                        </svg>`;
+                    break;
+                    
+                case 35: // LED light bulb - Modern LED with blue indicators
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <circle cx="40" cy="30" r="15" fill="#f0f8ff" stroke="#ddd" stroke-width="2"/>
+                            <rect x="35" y="45" width="10" height="8" fill="#e8e8e8" stroke="#ccc" stroke-width="1"/>
+                            <rect x="37" y="53" width="6" height="4" fill="#444" stroke="#333" stroke-width="1"/>
+                            <path d="M32 25 L48 35 M32 35 L48 25" stroke="#4169e1" stroke-width="2"/>
+                            <circle cx="40" cy="30" r="3" fill="#4169e1"/>
+                        </svg>`;
+                    break;
+                    
+                case 37: // Rust remover - Orange chemical bottle
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <rect x="30" y="15" width="20" height="40" fill="#ff6b35" stroke="#cc4125" stroke-width="2" rx="10"/>
+                            <rect x="35" y="10" width="10" height="10" fill="#444" stroke="#333" stroke-width="2" rx="2"/>
+                            <rect x="32" y="25" width="16" height="8" fill="#ffffff" rx="2"/>
+                            <text x="40" y="30" text-anchor="middle" font-size="6" fill="#ff6b35" font-weight="bold">RUST</text>
+                            <text x="40" y="37" text-anchor="middle" font-size="6" fill="#ff6b35" font-weight="bold">GONE</text>
+                            <path d="M37 10 L40 5 L43 10" fill="#666"/>
+                        </svg>`;
+                    break;
+                    
+                case 38: // Oven cleaner - Blue aerosol can
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <rect x="30" y="20" width="20" height="35" fill="#4169e1" stroke="#2c5aa0" stroke-width="2" rx="10"/>
+                            <rect x="35" y="15" width="10" height="8" fill="#666" stroke="#444" stroke-width="2" rx="2"/>
+                            <rect x="32" y="30" width="16" height="8" fill="#ffffff" rx="2"/>
+                            <text x="40" y="35" text-anchor="middle" font-size="5" fill="#4169e1" font-weight="bold">OVEN</text>
+                            <text x="40" y="41" text-anchor="middle" font-size="5" fill="#4169e1" font-weight="bold">CLEAN</text>
+                            <path d="M38 15 L40 8 L42 15" fill="#444"/>
+                            <path d="M36 8 Q40 5 44 8" fill="none" stroke="#87ceeb" stroke-width="2"/>
+                        </svg>`;
+                    break;
+                    
+                default:
+                    return null;
             }
-        }
-
-        // Log total items for verification
-        console.log(`Total unique items available: ${45 + additionalItems.length}`);
-        console.log(`Level 1 items: ${gameData[1].items.length}`);
-        console.log(`Level 2 items: ${gameData[2].items.length}`);
-        console.log(`Level 3 items: ${gameData[3].items.length}`);
-
-        // Game state
-        let currentLevel = 1;
-        let currentScore = 0;
-        let currentItemIndex = 0;
-        let levelItems = [];
-        let gameStarted = false;
-        let levelComplete = false;
-        let correctAnswers = 0;
-        let totalAnswers = 0;
-
-        // DOM elements
-        const currentItemEl = document.getElementById('current-item');
-        const currentLevelEl = document.getElementById('current-level');
-        const scoreEl = document.getElementById('score');
-        const itemsLeftEl = document.getElementById('items-left');
-        const feedbackEl = document.getElementById('feedback');
-        const progressEl = document.getElementById('progress');
-        const levelCompleteEl = document.getElementById('level-complete');
-        const gameCompleteEl = document.getElementById('game-complete');
-
-        function shuffleArray(array) {
-            const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled;
-        }
-
-        function startLevel() {
-            if (currentLevel > 3) {
-                showGameComplete();
-                return;
-            }
-
-            gameStarted = true;
-            levelComplete = false;
-            currentItemIndex = 0;
-            correctAnswers = 0;
-            totalAnswers = 0;
-            levelItems = shuffleArray(gameData[currentLevel].items);
             
-            levelCompleteEl.classList.add('hidden');
-            gameCompleteEl.classList.add('hidden');
+            return svgContent;
+        }
+
+        // Initialize game
+        function initGame() {
+            updateUI();
+            showLevelLesson();
+            updateBackground();
+            setupEventListeners();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Start/skip buttons
+            document.getElementById('start-btn').addEventListener('click', hideLevelLesson);
+            document.getElementById('skip-btn').addEventListener('click', hideLevelLesson);
             
-            updateDisplay();
-            showNextItem();
-        }
-
-        function showNextItem() {
-            if (currentItemIndex >= levelItems.length) {
-                showLevelComplete();
-                return;
-            }
-
-            const item = levelItems[currentItemIndex];
-            currentItemEl.innerHTML = `<div style="font-size: 3rem; margin-bottom: 10px;">${item.emoji}</div><div>${item.name}</div>`;
-            feedbackEl.textContent = '';
-            clearBinHighlights();
-        }
-
-        function sortItem(binType) {
-            if (!gameStarted || levelComplete) return;
-
-            const currentItem = levelItems[currentItemIndex];
-            const isCorrect = currentItem.category === binType;
-            totalAnswers++;
-
-            if (isCorrect) {
-                correctAnswers++;
-                currentScore += 10;
-                feedbackEl.textContent = `✅ Correct! ${currentItem.explanation}`;
-                feedbackEl.className = 'feedback correct-feedback';
-                highlightBin(binType, 'correct');
-            } else {
-                feedbackEl.textContent = `❌ Incorrect. ${currentItem.explanation}`;
-                feedbackEl.className = 'feedback incorrect-feedback';
-                highlightBin(binType, 'incorrect');
-            }
-
-            currentItemIndex++;
-            updateDisplay();
-
-            setTimeout(() => {
-                showNextItem();
-            }, 4500);
-        }
-
-        function highlightBin(binType, result) {
-            clearBinHighlights();
-            const bin = document.querySelector(`.bin.${binType}`);
-            bin.classList.add(result);
-        }
-
-        function clearBinHighlights() {
-            document.querySelectorAll('.bin').forEach(bin => {
-                bin.classList.remove('correct', 'incorrect');
+            // Reset button
+            document.getElementById('reset-btn').addEventListener('click', resetGame);
+            
+            // Play again button
+            document.getElementById('play-again-btn').addEventListener('click', resetGame);
+            
+            // Drag and drop
+            const currentItemEl = document.getElementById('current-item');
+            currentItemEl.addEventListener('dragstart', handleDragStart);
+            
+            // Bins
+            const bins = document.querySelectorAll('.bin');
+            bins.forEach(bin => {
+                bin.addEventListener('dragover', handleDragOver);
+                bin.addEventListener('drop', handleDrop);
+                bin.addEventListener('dragenter', handleDragEnter);
+                bin.addEventListener('dragleave', handleDragLeave);
             });
         }
 
-        function updateDisplay() {
-            currentLevelEl.textContent = `${currentLevel} (${gameData[currentLevel].name})`;
-            scoreEl.textContent = currentScore;
-            itemsLeftEl.textContent = Math.max(0, levelItems.length - currentItemIndex);
+        // Update UI elements
+        function updateUI() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('streak').textContent = gameState.streak;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('items-completed').textContent = gameState.itemsCompleted;
             
-            const progress = (currentItemIndex / levelItems.length) * 100;
-            progressEl.style.width = `${progress}%`;
+            // Update location message
+            const messageData = locationMessages[gameState.level];
+            const messageEl = document.getElementById('location-message');
+            messageEl.textContent = messageData.text;
+            messageEl.className = `location-message ${messageData.class}`;
         }
 
-        function showLevelComplete() {
-            levelComplete = true;
-            const accuracy = Math.round((correctAnswers / totalAnswers) * 100);
+        // Update background based on level
+        function updateBackground() {
+            const background = document.getElementById('background');
+            const backgroundSvg = document.getElementById('background-svg');
             
-            if (correctAnswers === totalAnswers) {
-                // Perfect score - can advance
-                currentItemEl.innerHTML = "Perfect! Level Complete! 🎉";
-                feedbackEl.innerHTML = `<div style="color: #4CAF50; font-size: 1.3rem;">🌟 Excellent! You got all ${totalAnswers} items correct!</div>`;
-                document.getElementById('level-score').innerHTML = `${currentScore} points<br><span style="color: #4CAF50;">Perfect Score: ${accuracy}%</span>`;
-                document.getElementById('level-complete-title').textContent = "🎉 Level Complete!";
-                document.getElementById('level-complete-message').textContent = "Perfect! You've mastered this level.";
-                if (currentLevel < 3) {
-                    document.getElementById('next-level-instruction').innerHTML = '<strong>Click "Next Level" to advance!</strong>';
-                } else {
-                    document.getElementById('next-level-instruction').innerHTML = '<strong>Click "Next Level" to see final results!</strong>';
-                }
-            } else {
-                // Not perfect - must retry
-                currentItemEl.innerHTML = "Level Not Passed 😔";
-                feedbackEl.innerHTML = `<div style="color: #f44336; font-size: 1.3rem;">You got ${correctAnswers}/${totalAnswers} correct (${accuracy}%)<br>You need 100% to advance! Try again.</div>`;
-                document.getElementById('level-score').innerHTML = `${currentScore} points<br><span style="color: #f44336;">Score: ${accuracy}% - Need 100% to advance</span>`;
-                document.getElementById('level-complete-title').textContent = "😔 Level Not Passed";
-                document.getElementById('level-complete-message').textContent = "You need 100% correct to advance to the next level.";
-                document.getElementById('next-level-instruction').innerHTML = '<strong>Click "Next Level" to try this level again!</strong>';
+            background.className = `background level-${gameState.level}`;
+            
+            let svgContent = '';
+            switch(gameState.level) {
+                case 1:
+                    svgContent = createLevel1Background();
+                    break;
+                case 2:
+                    svgContent = createLevel2Background();
+                    break;
+                case 3:
+                    svgContent = createLevel3Background();
+                    break;
             }
             
-            levelCompleteEl.classList.remove('hidden');
+            backgroundSvg.innerHTML = svgContent;
         }
 
-        function nextLevel() {
-            if (correctAnswers === totalAnswers) {
-                // Only advance if perfect score
-                if (currentLevel < 3) {
-                    currentLevel++;
-                    startLevel();
-                } else {
+        // Show level lesson modal
+        function showLevelLesson() {
+            const modal = document.getElementById('modal');
+            const lesson = levelLessons[gameState.level];
+            
+            document.getElementById('modal-title').textContent = lesson.title;
+            document.getElementById('modal-subtitle').textContent = lesson.subtitle;
+            
+            let content = '';
+            lesson.content.forEach(item => {
+                content += `
+                    <div class="lesson-item">
+                        <div class="lesson-bin">${item.bin}</div>
+                        <div class="lesson-description">${item.description}</div>
+                        <div class="lesson-tip">${item.tip}</div>
+                    </div>
+                `;
+            });
+            
+            if (lesson.commonMistakes) {
+                content += `
+                    <div class="lesson-warning">
+                        <div class="warning-title">⚠️ Watch Out!</div>
+                        <div class="warning-text">${lesson.commonMistakes}</div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('modal-body').innerHTML = content;
+            
+            const startBtn = document.getElementById('start-btn');
+            const skipBtn = document.getElementById('skip-btn');
+            
+            startBtn.textContent = gameState.level === 1 ? 'Start Game!' : 'Continue Playing!';
+            skipBtn.classList.toggle('hidden', gameState.level === 1);
+            
+            modal.classList.remove('hidden');
+        }
+
+        // Hide level lesson modal
+        function hideLevelLesson() {
+            document.getElementById('modal').classList.add('hidden');
+            gameState.showingLesson = false;
+            gameState.gameStarted = true;
+            getNextItem();
+        }
+
+        // Get available items for current level
+        function getAvailableItems() {
+            return wasteItems.filter(item => 
+                item.level <= gameState.level && 
+                !gameState.completedItems.has(item.id)
+            );
+        }
+
+        // Get next random item
+        function getNextItem() {
+            const availableItems = getAvailableItems();
+            
+            if (availableItems.length === 0) {
+                // Game complete
+                showGameComplete();
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * availableItems.length);
+            gameState.currentItem = availableItems[randomIndex];
+            showCurrentItem();
+        }
+
+        // Show current item
+        function showCurrentItem() {
+            if (!gameState.currentItem) return;
+            
+            const container = document.getElementById('current-item-container');
+            const itemEl = document.getElementById('current-item');
+            const nameEl = document.getElementById('item-name');
+            
+            // Check if we have a custom SVG for this item
+            const svgEmoji = generateSVGEmoji(gameState.currentItem.id);
+            if (svgEmoji) {
+                itemEl.innerHTML = svgEmoji;
+            } else {
+                // Clear any previous SVG and show emoji
+                itemEl.innerHTML = '';
+                itemEl.textContent = gameState.currentItem.emoji;
+            }
+            
+            // Ensure drag functionality is working - re-attach event listener
+            itemEl.draggable = true;
+            itemEl.removeEventListener('dragstart', handleDragStart);
+            itemEl.addEventListener('dragstart', handleDragStart);
+            
+            nameEl.textContent = gameState.currentItem.name;
+            
+            container.classList.remove('hidden');
+        }
+
+        // Drag and drop handlers
+        function handleDragStart(e) {
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (!gameState.currentItem) return;
+            
+            const binType = this.getAttribute('data-type');
+            const isCorrect = gameState.currentItem.type === binType;
+            
+            // Mark item as completed
+            gameState.completedItems.add(gameState.currentItem.id);
+            gameState.itemsCompleted++;
+            
+            if (isCorrect) {
+                const points = Math.round(10 * (1 + gameState.streak * 0.5));
+                gameState.score += points;
+                gameState.streak++;
+                showFeedback('success', gameState.currentItem.explanation, points);
+            } else {
+                gameState.streak = 0;
+                showFeedback('error', gameState.currentItem.wrongExplanation, 0);
+            }
+            
+            updateUI();
+            
+            // Check for level up
+            if ((gameState.itemsCompleted === 14 && gameState.level === 1) || 
+                (gameState.itemsCompleted === 29 && gameState.level === 2)) {
+                levelUp();
+            }
+            
+            // Hide current item
+            document.getElementById('current-item-container').classList.add('hidden');
+            
+            // Get next item after delay
+            setTimeout(() => {
+                hideFeedback();
+                if (gameState.itemsCompleted === 44) {
                     showGameComplete();
+                } else if (gameState.showingLesson) {
+                    // Wait for lesson to complete
+                } else {
+                    getNextItem();
                 }
+            }, 2500);
+        }
+
+        // Show feedback
+        function showFeedback(type, message, points) {
+            const feedback = document.getElementById('feedback');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const messageEl = document.getElementById('feedback-message');
+            const pointsEl = document.getElementById('feedback-points');
+            
+            feedback.className = `feedback ${type}`;
+            icon.textContent = type === 'success' ? '✅' : '❌';
+            title.textContent = type === 'success' ? 'Correct!' : 'Incorrect!';
+            messageEl.textContent = message;
+            
+            if (type === 'success' && points > 0) {
+                pointsEl.textContent = `+${points} points!`;
+                pointsEl.classList.remove('hidden');
             } else {
-                // Must retry current level
-                startLevel();
+                pointsEl.classList.add('hidden');
             }
+            
+            feedback.classList.remove('hidden');
         }
 
+        // Hide feedback
+        function hideFeedback() {
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('level-up').classList.add('hidden');
+        }
+
+        // Level up
+        function levelUp() {
+            gameState.level++;
+            gameState.showingLesson = true;
+            
+            // Show level up message
+            const levelUpEl = document.getElementById('level-up');
+            levelUpEl.textContent = `🎉 Level Up! Welcome to Level ${gameState.level}! 🎉`;
+            levelUpEl.classList.remove('hidden');
+            
+            updateBackground();
+            
+            setTimeout(() => {
+                hideFeedback();
+                showLevelLesson();
+            }, 3000);
+        }
+
+        // Show game complete
         function showGameComplete() {
+            const feedback = document.getElementById('feedback');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const messageEl = document.getElementById('feedback-message');
+            const gameCompleteEl = document.getElementById('game-complete');
+            const finalScoreEl = document.getElementById('final-score');
+            
+            feedback.className = 'feedback success';
+            icon.textContent = '🎉';
+            title.textContent = 'Game Complete!';
+            messageEl.textContent = 'Congratulations! You\'ve mastered Seattle waste sorting with all 44 items!';
+            
+            finalScoreEl.textContent = gameState.score;
             gameCompleteEl.classList.remove('hidden');
-            document.getElementById('final-score').textContent = currentScore;
-            currentItemEl.innerHTML = "Congratulations! You're an EcoSort Master! 🏆";
+            feedback.classList.remove('hidden');
         }
 
-        function restartGame() {
-            currentLevel = 1;
-            currentScore = 0;
-            currentItemIndex = 0;
-            gameStarted = false;
-            levelComplete = false;
+        // Reset game
+        function resetGame() {
+            gameState = {
+                score: 0,
+                streak: 0,
+                level: 1,
+                itemsCompleted: 0,
+                currentItem: null,
+                completedItems: new Set(),
+                gameStarted: false,
+                showingLesson: true
+            };
             
-            levelCompleteEl.classList.add('hidden');
-            gameCompleteEl.classList.add('hidden');
+            hideFeedback();
+            document.getElementById('current-item-container').classList.add('hidden');
+            document.getElementById('game-complete').classList.add('hidden');
             
-            currentItemEl.innerHTML = "Click 'Start Level' to begin!";
-            feedbackEl.textContent = '';
-            clearBinHighlights();
-            updateDisplay();
+            updateUI();
+            updateBackground();
+            showLevelLesson();
         }
 
-        function showInstructions() {
-            alert(`🌍 EcoSort Challenge Instructions 🌍
-
-🎯 GOAL: Sort items into the correct bins to protect our environment!
-
-🗑️ GARBAGE: Non-recyclable waste that goes to landfills
-♻️ RECYCLING: Clean materials that can be reprocessed
-⚠️ HAZARDOUS: Dangerous materials needing special disposal  
-🌱 COMPOST: Organic waste that can decompose naturally
-
-📊 SCORING:
-• Correct sort: +10 points
-• Learn from explanations when you get items wrong!
-
-🏆 LEVELS:
-• 3 levels: Beginner → Intermediate → Advanced
-• Each level has 50 items to sort
-• You MUST get 100% correct to advance to the next level!
-• If you don't get 100%, you'll retry the same level
-
-💡 TIP: Pay close attention to the explanations - they're key to mastering each level!
-
-Ready to become an EcoSort Expert? Perfect scores only! 🌱`);
-        }
-
-        // Initialize the game
-        updateDisplay();
+        // Start the game when page loads
+        document.addEventListener('DOMContentLoaded', initGame);
     </script>
 </body>
 </html>
