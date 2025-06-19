@@ -691,21 +691,21 @@
                 <li style="margin-bottom: 0.5rem;">• <strong>⚠️ Watch for critical details:</strong> Hazardous materials, contamination types, processing limitations</li>
                 <li style="margin-bottom: 0.5rem;">• <strong>🎯 Each item appears ONCE:</strong> No repeats - every item is unique throughout the entire game</li>
                 <li style="margin-bottom: 0.5rem;">• <strong>🏞️ Seattle Locations:</strong> Progress through iconic Seattle locations as you learn - Gas Works Park (lots of litter), Lake Union Beach (some litter), downtown Seattle with Space Needle (clean and beautiful)!</li>
-                <li style="margin-bottom: 0.5rem;">• Complete Level 1 (14 items), Level 2 (15 items), Level 3 (15 items) = <strong>44 total comprehensive items</strong></li>
+                <li style="margin-bottom: 0.5rem;">• Complete Level 1 (14 items), Level 2 (14 items), Level 3 (15 items) = <strong>43 total comprehensive items</strong></li>
                 <li>• Build streaks for bonus points and learn rules that surprise even Seattle waste management professionals!</li>
             </ul>
             
             <div class="info-box green">
                 <h4 class="info-title green">✅ Complete Expert-Reviewed Item Set:</h4>
                 <p class="info-text green">
-                    Now features 44 comprehensive items with UNIQUE emojis and NO REPEATS! Each item appears exactly once per game.
+                    Now features 43 comprehensive items with UNIQUE emojis and NO REPEATS! Each item appears exactly once per game.
                     Experience authentic Seattle locations: Gas Works Park (Level 1), Lake Union Beach (Level 2), and downtown Seattle with Space Needle (Level 3)!
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- Modal (initially hidden) -->
+    <!-- Modal (initially visible) -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -845,35 +845,34 @@
             { id: 13, name: 'Paper Towel (Unused)', type: 'compost', emoji: '', level: 1, explanation: 'Correct! Clean paper towels can be composted!', wrongExplanation: 'Oops! Unused paper towels go in compost, not garbage or recycling.' },
             { id: 14, name: 'Envelope (Clean)', type: 'recycling', emoji: '✉️', level: 1, explanation: 'Correct! Clean envelopes are recyclable paper!', wrongExplanation: 'Oops! Clean paper envelopes go in recycling.' },
             
-            // Level 2 - Medium items (15 items)
-            { id: 15, name: 'Greasy Pizza Box', type: 'compost', emoji: '📦', level: 2, explanation: 'Correct! Seattle\'s special rule: Cedar Grove accepts food-soiled paper in compost!', wrongExplanation: 'Oops! In Seattle, greasy pizza boxes go in compost—this is different from other cities!' },
+            // Level 2 - Medium items (14 items)
+            { id: 15, name: 'Greasy Pizza Box', type: 'compost', emoji: '', level: 2, explanation: 'Correct! Seattle\'s special rule: Cedar Grove accepts food-soiled paper in compost!', wrongExplanation: 'Oops! In Seattle, greasy pizza boxes go in compost—this is different from other cities!' },
             { id: 16, name: 'Coffee Grounds & Filter', type: 'compost', emoji: '', level: 2, explanation: 'Correct! Coffee grounds are amazing for compost—worms love them!', wrongExplanation: 'Oops! Coffee grounds and paper filters go in compost, not garbage.' },
             { id: 17, name: 'Plastic Shopping Bag', type: 'garbage', emoji: '🛍️', level: 2, explanation: 'Correct! For curbside pickup, plastic bags go to garbage.', wrongExplanation: 'Oops! Plastic bags jam recycling machines. Take them to store drop-off bins instead!' },
-            { id: 18, name: 'Chip Bag', type: 'garbage', emoji: '🍟', level: 2, explanation: 'Correct! Chip bags are multi-layer packaging that goes to garbage.', wrongExplanation: 'Oops! Chip bags can\'t be recycled due to their foil lining.' },
+            { id: 18, name: 'Chip Bag', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Chip bags are multi-layer packaging that goes to garbage.', wrongExplanation: 'Oops! Chip bags can\'t be recycled due to their foil lining.' },
             { id: 19, name: 'Non-Metallic Wrapping Paper', type: 'recycling', emoji: '🎁', level: 2, explanation: 'Correct! Non-metallic wrapping paper can be recycled!', wrongExplanation: 'Oops! Plain wrapping paper (no foil/glitter) goes in recycling.' },
-            { id: 20, name: 'Small Bottle Cap (Loose)', type: 'garbage', emoji: '🔴', level: 2, explanation: 'Correct! Loose bottle caps under 3" go to garbage—they jam machines!', wrongExplanation: 'Oops! Small loose caps go to garbage. Only attach caps to bottles for recycling.' },
+            { id: 20, name: 'Small Bottle Cap (Loose)', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Loose bottle caps under 3" go to garbage—they jam machines!', wrongExplanation: 'Oops! Small loose caps go to garbage. Only attach caps to bottles for recycling.' },
             { id: 22, name: 'Pumpkin (No Paint/Candle)', type: 'compost', emoji: '🎃', level: 2, explanation: 'Correct! Natural pumpkins are compostable—just remove paint and candles!', wrongExplanation: 'Oops! Clean pumpkins go in compost, but painted ones go to garbage.' },
             { id: 23, name: 'Wire Coat Hanger', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Wire hangers jam recycling machines and go to garbage.', wrongExplanation: 'Oops! Wire hangers tangle in recycling equipment—they go to garbage.' },
-            { id: 24, name: 'Plastic Food Container (Clean)', type: 'recycling', emoji: '🥡', level: 2, explanation: 'Correct! Clean plastic food containers are recyclable!', wrongExplanation: 'Oops! Clean plastic containers go in recycling.' },
+            { id: 24, name: 'Plastic Food Container (Clean)', type: 'recycling', emoji: '', level: 2, explanation: 'Correct! Clean plastic food containers are recyclable!', wrongExplanation: 'Oops! Clean plastic containers go in recycling.' },
             { id: 25, name: 'Tissue Paper (No Tape)', type: 'compost', emoji: '🎀', level: 2, explanation: 'Correct! Tissue paper can be composted—short fibers are fine!', wrongExplanation: 'Oops! Clean tissue paper goes in compost, but remove tape first.' },
             { id: 26, name: 'Cotton Balls', type: 'garbage', emoji: '☁️', level: 2, explanation: 'Correct! Cotton balls risk contamination—Cedar Grove doesn\'t accept them.', wrongExplanation: 'Oops! Cotton balls often have synthetic fibers or chemicals—they go to garbage.' },
             { id: 27, name: 'Steel Wool', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Steel wool is too small and contaminated for recycling.', wrongExplanation: 'Oops! Steel wool tangles in machines and is usually contaminated—garbage only.' },
             { id: 28, name: 'Shredded Paper', type: 'garbage', emoji: '📃', level: 2, explanation: 'Correct! Cedar Grove doesn\'t accept shredded paper—risk of plastic contamination.', wrongExplanation: 'Oops! Shredded paper goes to garbage—too much contamination risk for compost.' },
             { id: 29, name: 'Battery', type: 'hazardous', emoji: '🔋', level: 2, explanation: 'Correct! Batteries contain toxic chemicals and need hazardous waste disposal!', wrongExplanation: 'Oops! Batteries are hazardous—never put in regular bins!' },
-            { id: 30, name: 'Paper Clips', type: 'garbage', emoji: '📎', level: 2, explanation: 'Consider reusing! Paper clips should be separated from paper and reused.', wrongExplanation: 'Paper clips should be removed from paper and reused rather than disposed of.' },
             
             // Level 3 - Hard items (15 items)
             { id: 31, name: 'CD/DVD', type: 'garbage', emoji: '💿', level: 3, explanation: 'Correct! CDs and DVDs go to garbage—the plastic is not recyclable.', wrongExplanation: 'Oops! CDs and DVDs can\'t be recycled in regular bins—they go to garbage.' },
-            { id: 32, name: 'Styrofoam Container', type: 'garbage', emoji: '⬜', level: 3, explanation: 'Correct! Styrofoam isn\'t recyclable in Seattle despite recycling symbols.', wrongExplanation: 'Oops! Styrofoam looks recyclable but goes to garbage—can\'t be processed in Seattle.' },
-            { id: 33, name: 'Broken Glass (Wrapped)', type: 'garbage', emoji: '🔺', level: 3, explanation: 'Correct! Broken glass goes to garbage if safely wrapped—not hazardous waste.', wrongExplanation: 'Oops! Wrap broken glass safely and put in garbage—only whole glass recycles.' },
+            { id: 32, name: 'Styrofoam Container', type: 'garbage', emoji: '', level: 3, explanation: 'Correct! Styrofoam isn\'t recyclable in Seattle despite recycling symbols.', wrongExplanation: 'Oops! Styrofoam looks recyclable but goes to garbage—can\'t be processed in Seattle.' },
+            { id: 33, name: 'Broken Glass (Wrapped)', type: 'garbage', emoji: '', level: 3, explanation: 'Correct! Broken glass goes to garbage if safely wrapped—not hazardous waste.', wrongExplanation: 'Oops! Wrap broken glass safely and put in garbage—only whole glass recycles.' },
             { id: 34, name: 'CFL Light Bulb', type: 'hazardous', emoji: '💡', level: 3, explanation: 'Correct! CFLs contain mercury and need hazardous waste disposal!', wrongExplanation: 'Oops! CFL bulbs have mercury—hazardous waste only! LED/incandescent go to garbage.' },
             { id: 35, name: 'LED Light Bulb', type: 'garbage', emoji: '', level: 3, explanation: 'Correct! LED bulbs go to garbage—only CFLs are hazardous.', wrongExplanation: 'Oops! LED bulbs go to garbage. Only CFL bulbs need hazardous waste disposal.' },
             { id: 36, name: 'Wood Stain', type: 'hazardous', emoji: '', level: 3, explanation: 'Correct! Wood stain contains chemicals that need hazardous waste disposal!', wrongExplanation: 'Oops! Wood stain is toxic—never put in regular bins or pour down drains!' },
             { id: 37, name: 'Rust Remover', type: 'hazardous', emoji: '', level: 3, explanation: 'Correct! Rust remover is corrosive and needs hazardous waste disposal!', wrongExplanation: 'Oops! Chemical rust removers are hazardous—protect workers and environment!' },
             { id: 38, name: 'Oven Cleaner (Aerosol)', type: 'hazardous', emoji: '', level: 3, explanation: 'Correct! Aerosol oven cleaners are toxic and pressurized—hazardous waste!', wrongExplanation: 'Oops! Aerosol cleaners are hazardous—chemicals plus pressure = special handling!' },
             { id: 39, name: 'Motor Oil-Soaked Paper Towels', type: 'garbage', emoji: '🛢️', level: 3, explanation: 'Correct! Chemical-contaminated paper towels go to garbage, not compost.', wrongExplanation: 'Oops! Chemical contamination makes paper towels garbage—only food-soiled goes to compost.' },
-            { id: 40, name: 'Spot Remover (Aerosol)', type: 'hazardous', emoji: '🧴', level: 3, explanation: 'Correct! Aerosol spot removers contain toxic solvents—hazardous waste!', wrongExplanation: 'Oops! Solvent-based spot removers are hazardous chemicals!' },
-            { id: 42, name: 'Orange Prescription Bottle', type: 'garbage', emoji: '💊', level: 3, explanation: 'Correct! Orange prescription bottles are too brittle to recycle.', wrongExplanation: 'Oops! Orange/brown prescription bottles go to garbage—different plastic type.' },
+            { id: 40, name: 'Spot Remover (Aerosol)', type: 'hazardous', emoji: '', level: 3, explanation: 'Correct! Aerosol spot removers contain toxic solvents—hazardous waste!', wrongExplanation: 'Oops! Solvent-based spot removers are hazardous chemicals!' },
+            { id: 42, name: 'Orange Prescription Bottle', type: 'garbage', emoji: '', level: 3, explanation: 'Correct! Orange prescription bottles are too brittle to recycle.', wrongExplanation: 'Oops! Orange/brown prescription bottles go to garbage—different plastic type.' },
             { id: 43, name: 'Hair (Human/Pet)', type: 'garbage', emoji: '💇', level: 3, explanation: 'Correct! Cedar Grove doesn\'t accept hair—licensing restrictions.', wrongExplanation: 'Oops! Hair is compostable but Cedar Grove can\'t accept human/pet hair.' },
             { id: 44, name: 'Pencil Shavings', type: 'garbage', emoji: '✏️', level: 3, explanation: 'Correct! Pencil shavings have paint and graphite—not compostable.', wrongExplanation: 'Oops! Paint and graphite make pencil shavings garbage, not compost.' },
             { id: 45, name: 'Wine Corks', type: 'garbage', emoji: '🍾', level: 3, explanation: 'Correct! Cork contamination issues make them garbage-bound.', wrongExplanation: 'Oops! Natural vs synthetic cork contamination makes all corks garbage.' },
@@ -980,6 +979,19 @@
                             <circle cx="45" cy="45" r="1" fill="#e8e8e8" opacity="0.5"/>
                             <circle cx="50" cy="28" r="1" fill="#e8e8e8" opacity="0.5"/>
                             <text x="44" y="50" text-anchor="middle" font-size="5" fill="#ccc" font-weight="bold">KITCHEN</text>
+                        </svg>`;
+                    break;
+                    
+                case 38: // Oven cleaner - Blue aerosol can
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
+                            <rect x="30" y="20" width="20" height="35" fill="#4169e1" stroke="#2c5aa0" stroke-width="2" rx="10"/>
+                            <rect x="35" y="15" width="10" height="8" fill="#666" stroke="#444" stroke-width="2" rx="2"/>
+                            <rect x="32" y="30" width="16" height="8" fill="#ffffff" rx="2"/>
+                            <text x="40" y="35" text-anchor="middle" font-size="5" fill="#4169e1" font-weight="bold">OVEN</text>
+                            <text x="40" y="41" text-anchor="middle" font-size="5" fill="#4169e1" font-weight="bold">CLEAN</text>
+                            <path d="M38 15 L40 8 L42 15" fill="#444"/>
+                            <path d="M36 8 Q40 5 44 8" fill="none" stroke="#87ceeb" stroke-width="2"/>
                         </svg>`;
                     break;
                     
@@ -1106,16 +1118,174 @@
                         </svg>`;
                     break;
                     
-                case 38: // Oven cleaner - Blue aerosol can
+                case 40: // Spot remover - Blue bottle with trigger and spray
                     svgContent = `
-                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
-                            <rect x="30" y="20" width="20" height="35" fill="#4169e1" stroke="#2c5aa0" stroke-width="2" rx="10"/>
-                            <rect x="35" y="15" width="10" height="8" fill="#666" stroke="#444" stroke-width="2" rx="2"/>
-                            <rect x="32" y="30" width="16" height="8" fill="#ffffff" rx="2"/>
-                            <text x="40" y="35" text-anchor="middle" font-size="5" fill="#4169e1" font-weight="bold">OVEN</text>
-                            <text x="40" y="41" text-anchor="middle" font-size="5" fill="#4169e1" font-weight="bold">CLEAN</text>
-                            <path d="M38 15 L40 8 L42 15" fill="#444"/>
-                            <path d="M36 8 Q40 5 44 8" fill="none" stroke="#87ceeb" stroke-width="2"/>
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <ellipse cx="55" cy="50" rx="18" ry="25" fill="#4169e1" stroke="#2c5aa0" stroke-width="2"/>
+                            <path d="M37 45 Q30 40 25 45 Q30 50 37 45" fill="#666" stroke="#444" stroke-width="2"/>
+                            <rect x="25" y="42" width="15" height="6" fill="#333" stroke="#222" stroke-width="1" rx="3"/>
+                            <ellipse cx="55" cy="45" rx="12" ry="8" fill="#ffffff" stroke="#ddd" stroke-width="1"/>
+                            <text x="55" y="47" text-anchor="middle" font-size="6" fill="#4169e1" font-weight="bold">SPOT</text>
+                            <text x="55" y="52" text-anchor="middle" font-size="5" fill="#4169e1" font-weight="bold">OUT</text>
+                            <ellipse cx="55" cy="25" rx="8" ry="4" fill="#333" stroke="#222" stroke-width="1"/>
+                            <circle cx="15" cy="43" r="1.5" fill="#87ceeb" opacity="0.7"/>
+                            <circle cx="12" cy="40" r="1" fill="#87ceeb" opacity="0.5"/>
+                            <circle cx="10" cy="45" r="0.8" fill="#87ceeb" opacity="0.6"/>
+                            <circle cx="8" cy="42" r="0.6" fill="#87ceeb" opacity="0.4"/>
+                            <circle cx="13" cy="47" r="1.2" fill="#87ceeb" opacity="0.8"/>
+                        </svg>`;
+                    break;
+                    
+                case 15: // Greasy pizza box - Mario's Pizza with heavy grease stains
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <rect x="15" y="35" width="70" height="45" fill="#deb887" stroke="#8b7355" stroke-width="2" rx="4"/>
+                            <rect x="15" y="20" width="70" height="20" fill="#f5deb3" stroke="#8b7355" stroke-width="2" rx="4"/>
+                            <line x1="15" y1="40" x2="85" y2="40" stroke="#8b7355" stroke-width="2"/>
+                            <ellipse cx="30" cy="55" rx="8" ry="6" fill="#b8860b" opacity="0.8"/>
+                            <ellipse cx="60" cy="65" rx="10" ry="7" fill="#b8860b" opacity="0.7"/>
+                            <ellipse cx="50" cy="50" rx="6" ry="5" fill="#b8860b" opacity="0.6"/>
+                            <circle cx="35" cy="45" r="2" fill="#8b4513" opacity="0.9"/>
+                            <circle cx="65" cy="55" r="1.5" fill="#8b4513" opacity="0.8"/>
+                            <circle cx="45" cy="70" r="1.8" fill="#8b4513" opacity="0.7"/>
+                            <rect x="25" y="25" width="50" height="10" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="2"/>
+                            <text x="50" y="32" text-anchor="middle" font-size="8" fill="#8b7355" font-weight="bold">MARIO'S PIZZA</text>
+                            <ellipse cx="40" cy="30" rx="4" ry="2" fill="#b8860b" opacity="0.4"/>
+                        </svg>`;
+                    break;
+                    
+                case 24: // Plastic food container - Clear with recycling #5
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <rect x="25" y="40" width="50" height="35" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" rx="6"/>
+                            <rect x="22" y="30" width="56" height="15" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2" rx="6"/>
+                            <rect x="25" y="35" width="50" height="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" rx="4"/>
+                            <circle cx="50" cy="57" r="12" fill="none" stroke="#2563eb" stroke-width="2"/>
+                            <path d="M42 50 L50 45 L58 50" stroke="#2563eb" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <path d="M58 50 Q63 57 58 64 L50 69 L42 64" stroke="#2563eb" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <path d="M42 64 Q37 57 42 50" stroke="#2563eb" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <circle cx="50" cy="57" r="6" fill="#2563eb"/>
+                            <text x="50" y="61" text-anchor="middle" font-size="8" fill="white" font-weight="bold">5</text>
+                            <line x1="28" y1="50" x2="72" y2="50" stroke="#e2e8f0" stroke-width="1"/>
+                            <line x1="28" y1="65" x2="72" y2="65" stroke="#e2e8f0" stroke-width="1"/>
+                            <circle cx="35" cy="45" r="2" fill="#22c55e" opacity="0.8"/>
+                            <text x="40" y="47" text-anchor="start" font-size="4" fill="#22c55e" font-weight="bold">CLEAN</text>
+                        </svg>`;
+                    break;
+                    
+                case 20: // Small bottle cap - Red with size measurement
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="20" fill="#ef4444" stroke="#dc2626" stroke-width="3"/>
+                            <g stroke="#dc2626" stroke-width="2" fill="none">
+                                <line x1="50" y1="30" x2="50" y2="25"/>
+                                <line x1="64.14" y1="35.86" x2="67.07" y2="32.93"/>
+                                <line x1="70" y1="50" x2="75" y2="50"/>
+                                <line x1="64.14" y1="64.14" x2="67.07" y2="67.07"/>
+                                <line x1="50" y1="70" x2="50" y2="75"/>
+                                <line x1="35.86" y1="64.14" x2="32.93" y2="67.07"/>
+                                <line x1="30" y1="50" x2="25" y2="50"/>
+                                <line x1="35.86" y1="35.86" x2="32.93" y2="32.93"/>
+                            </g>
+                            <circle cx="50" cy="50" r="15" fill="none" stroke="#fecaca" stroke-width="1"/>
+                            <circle cx="50" cy="50" r="10" fill="none" stroke="#fecaca" stroke-width="1"/>
+                            <circle cx="50" cy="50" r="8" fill="#ffffff" opacity="0.9"/>
+                            <text x="50" y="53" text-anchor="middle" font-size="6" fill="#ef4444" font-weight="bold">CAP</text>
+                            <line x1="30" y1="85" x2="70" y2="85" stroke="#666" stroke-width="2"/>
+                            <line x1="30" y1="82" x2="30" y2="88" stroke="#666" stroke-width="2"/>
+                            <line x1="70" y1="82" x2="70" y2="88" stroke="#666" stroke-width="2"/>
+                            <text x="50" y="95" text-anchor="middle" font-size="7" fill="#666" font-weight="bold">2.5" diameter</text>
+                        </svg>`;
+                    break;
+                    
+                case 42: // Orange prescription bottle - Amber with child-resistant cap
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <rect x="35" y="25" width="30" height="50" fill="#ff8c00" stroke="#e67e00" stroke-width="2" rx="6"/>
+                            <rect x="32" y="15" width="36" height="15" fill="#ffffff" stroke="#ddd" stroke-width="2" rx="6"/>
+                            <rect x="35" y="18" width="30" height="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" rx="4"/>
+                            <text x="50" y="23" text-anchor="middle" font-size="4" fill="#666" font-weight="bold">PUSH DOWN</text>
+                            <rect x="37" y="30" width="26" height="35" fill="#ffffff" stroke="#ddd" stroke-width="1" rx="3"/>
+                            <rect x="37" y="30" width="26" height="8" fill="#1e40af" rx="3 3 0 0"/>
+                            <text x="50" y="36" text-anchor="middle" font-size="4" fill="white" font-weight="bold">RxPHARMACY</text>
+                            <text x="50" y="43" text-anchor="middle" font-size="5" fill="#000" font-weight="bold">RX 987654</text>
+                            <rect x="39" y="46" width="22" height="2" fill="#ff8c00"/>
+                            <rect x="39" y="50" width="18" height="1.5" fill="#9ca3af"/>
+                            <rect x="39" y="53" width="20" height="1.5" fill="#9ca3af"/>
+                            <rect x="39" y="56" width="16" height="1.5" fill="#9ca3af"/>
+                            <rect x="39" y="59" width="22" height="1.5" fill="#9ca3af"/>
+                            <rect x="67" y="40" width="12" height="20" fill="#fef2f2" stroke="#ef4444" stroke-width="1" rx="2"/>
+                            <text x="73" y="52" text-anchor="middle" font-size="3" fill="#dc2626" font-weight="bold">⚠</text>
+                        </svg>`;
+                    break;
+                    
+                case 18: // Chip bag - Crispy Chips with foil lining
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <path d="M30 15 Q35 10 50 10 Q65 10 70 15 L75 75 Q70 85 50 85 Q30 85 25 75 Z" fill="#ffd700" stroke="#b8860b" stroke-width="2"/>
+                            <path d="M32 17 Q37 12 50 12 Q63 12 68 17 L73 73 Q68 83 50 83 Q32 83 27 73 Z" fill="#c0c0c0" stroke="#a0a0a0" stroke-width="1"/>
+                            <rect x="40" y="20" width="20" height="15" fill="#dc2626" stroke="#b91c1c" stroke-width="2" rx="3"/>
+                            <text x="50" y="29" text-anchor="middle" font-size="6" fill="white" font-weight="bold">CRISPY</text>
+                            <text x="50" y="34" text-anchor="middle" font-size="5" fill="white" font-weight="bold">CHIPS</text>
+                            <line x1="35" y1="40" x2="65" y2="40" stroke="#e5e7eb" stroke-width="1" opacity="0.8"/>
+                            <line x1="33" y1="50" x2="67" y2="50" stroke="#e5e7eb" stroke-width="1" opacity="0.8"/>
+                            <line x1="34" y1="60" x2="66" y2="60" stroke="#e5e7eb" stroke-width="1" opacity="0.8"/>
+                            <path d="M35 45 Q40 43 45 45 Q50 47 55 45 Q60 43 65 45" stroke="#9ca3af" stroke-width="1" fill="none"/>
+                            <path d="M33 55 Q38 53 43 55 Q48 57 53 55 Q58 53 63 55" stroke="#9ca3af" stroke-width="1" fill="none"/>
+                            <path d="M36 65 Q41 63 46 65 Q51 67 56 65 Q61 63 66 65" stroke="#9ca3af" stroke-width="1" fill="none"/>
+                            <rect x="32" y="15" width="36" height="4" fill="#8b7355" stroke="#6d5d47" stroke-width="1"/>
+                            <rect x="70" y="25" width="15" height="8" fill="#fef2f2" stroke="#f87171" stroke-width="1" rx="2"/>
+                            <text x="77.5" y="30" text-anchor="middle" font-size="3" fill="#dc2626" font-weight="bold">FOIL</text>
+                        </svg>`;
+                    break;
+                    
+                case 33: // Broken glass - Multiple shards with warnings
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <path d="M25 45 L45 25 L40 50 L20 55 Z" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2"/>
+                            <path d="M45 25 L65 35 L60 55 L40 50 Z" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2"/>
+                            <path d="M65 35 L80 20 L85 45 L60 55 Z" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2"/>
+                            <path d="M20 55 L40 50 L35 75 L15 70 Z" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2"/>
+                            <path d="M40 50 L60 55 L65 80 L35 75 Z" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2"/>
+                            <path d="M60 55 L85 45 L80 75 L65 80 Z" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2"/>
+                            <path d="M30 40 L35 35 L33 45" fill="#ffffff" opacity="0.7"/>
+                            <path d="M50 40 L55 37 L52 47" fill="#ffffff" opacity="0.7"/>
+                            <path d="M70 40 L75 37 L72 42" fill="#ffffff" opacity="0.7"/>
+                            <path d="M45 25 L48 20 M40 50 L43 47 M65 35 L68 30" stroke="#dc2626" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M80 20 L83 15 M60 55 L63 50 M35 75 L38 70" stroke="#dc2626" stroke-width="3" stroke-linecap="round"/>
+                            <rect x="35" y="5" width="30" height="12" fill="#fef2f2" stroke="#f87171" stroke-width="2" rx="6"/>
+                            <text x="50" y="13" text-anchor="middle" font-size="7" fill="#dc2626" font-weight="bold">⚠ SHARP!</text>
+                            <rect x="15" y="85" width="70" height="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1" rx="2"/>
+                            <text x="50" y="90" text-anchor="middle" font-size="5" fill="#6b7280" font-weight="bold">WRAP IN NEWSPAPER</text>
+                        </svg>`;
+                    break;
+                    
+                case 32: // Styrofoam container - White foam with misleading symbol
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <rect x="20" y="35" width="60" height="40" fill="#ffffff" stroke="#e5e7eb" stroke-width="2" rx="6"/>
+                            <rect x="17" y="25" width="66" height="15" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" rx="6"/>
+                            <line x1="17" y1="40" x2="83" y2="40" stroke="#94a3b8" stroke-width="1"/>
+                            <circle cx="25" cy="45" r="1.5" fill="#f1f5f9"/>
+                            <circle cx="35" cy="42" r="1.8" fill="#f1f5f9"/>
+                            <circle cx="45" cy="48" r="1.2" fill="#f1f5f9"/>
+                            <circle cx="55" cy="45" r="1.6" fill="#f1f5f9"/>
+                            <circle cx="65" cy="50" r="1.4" fill="#f1f5f9"/>
+                            <circle cx="75" cy="45" r="1.3" fill="#f1f5f9"/>
+                            <circle cx="30" cy="55" r="1.1" fill="#f1f5f9"/>
+                            <circle cx="40" cy="58" r="1.7" fill="#f1f5f9"/>
+                            <circle cx="50" cy="55" r="1.5" fill="#f1f5f9"/>
+                            <circle cx="60" cy="60" r="1.2" fill="#f1f5f9"/>
+                            <circle cx="70" cy="55" r="1.4" fill="#f1f5f9"/>
+                            <circle cx="25" cy="65" r="1.3" fill="#f1f5f9"/>
+                            <circle cx="45" cy="68" r="1.1" fill="#f1f5f9"/>
+                            <circle cx="65" cy="65" r="1.6" fill="#f1f5f9"/>
+                            <circle cx="70" cy="35" r="6" fill="none" stroke="#10b981" stroke-width="2"/>
+                            <path d="M66 31 L70 28 L74 31 M70 28 L70 42 M66 38 L70 42 L74 38" stroke="#10b981" stroke-width="2" fill="none"/>
+                            <text x="70" y="37" text-anchor="middle" font-size="5" fill="#10b981" font-weight="bold">6</text>
+                            <rect x="5" y="80" width="90" height="12" fill="#fef2f2" stroke="#f87171" stroke-width="1" rx="6"/>
+                            <text x="50" y="88" text-anchor="middle" font-size="6" fill="#dc2626" font-weight="bold">NOT RECYCLABLE DESPITE SYMBOL!</text>
+                            <text x="50" y="58" text-anchor="middle" font-size="8" fill="#9ca3af" font-weight="bold">FOAM</text>
                         </svg>`;
                     break;
                     
@@ -1341,7 +1511,7 @@
             
             // Check for level up
             if ((gameState.itemsCompleted === 14 && gameState.level === 1) || 
-                (gameState.itemsCompleted === 29 && gameState.level === 2)) {
+                (gameState.itemsCompleted === 28 && gameState.level === 2)) {
                 levelUp();
             }
             
@@ -1351,7 +1521,7 @@
             // Get next item after delay
             setTimeout(() => {
                 hideFeedback();
-                if (gameState.itemsCompleted === 44) {
+                if (gameState.itemsCompleted === 43) {
                     showGameComplete();
                 } else if (gameState.showingLesson) {
                     // Wait for lesson to complete
@@ -1420,7 +1590,7 @@
             feedback.className = 'feedback success';
             icon.textContent = '🎉';
             title.textContent = 'Game Complete!';
-            messageEl.textContent = 'Congratulations! You\'ve mastered Seattle waste sorting with all 44 items!';
+            messageEl.textContent = 'Congratulations! You\'ve mastered Seattle waste sorting with all 43 items!';
             
             finalScoreEl.textContent = gameState.score;
             gameCompleteEl.classList.remove('hidden');
