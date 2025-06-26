@@ -857,15 +857,20 @@
             itemsCompleted: 0,
             currentItem: null,
             completedItems: new Set(),
+            wrongAnswers: new Set(),
             gameStarted: false,
-            showingLesson: true
+            showingLesson: true,
+            reviewMode: false,
+            reviewItems: []
         };
 
-        // Level lessons
+        // Level lessons with environmental impact
         const levelLessons = {
             1: {
                 title: "Level 1: Basic Sorting",
                 subtitle: "Learn the four bins and easy items",
+                location: "🏭 Gas Works Park Cleanup",
+                impact: "Gas Works Park is built on a former gas plant site. Proper waste sorting here prevents soil contamination and keeps this unique 19-acre park safe for the 100,000+ annual visitors who come to see the iconic gasification towers and enjoy stunning city views!",
                 content: [
                     {
                         bin: "♻️ Recycling (Blue Bin)",
@@ -888,11 +893,23 @@
                         tip: "🚨 Never put hazardous items in regular bins—they can harm workers and environment!"
                     }
                 ],
-                commonMistakes: "Common mistake: Putting dirty containers in recycling instead of cleaning them first!"
+                commonMistakes: "Common mistake: Putting dirty containers in recycling instead of cleaning them first!",
+                pointsHelp: "🏆 Every 10 points = 1 piece of litter removed from Gas Works Park's historic grounds!",
+                haulerInfo: {
+                    title: "🚛 Seattle Waste & Recycling Services",
+                    description: "Seattle's waste collection is handled by these certified companies:",
+                    companies: [
+                        { name: "Waste Management (WM)", service: "Garbage & Recycling Collection", website: "wm.com" },
+                        { name: "Recology", service: "Garbage & Recycling Collection", website: "recology.com" },
+                        { name: "Cedar Grove", service: "Compost Processing", website: "cedar-grove.com" }
+                    ]
+                }
             },
             2: {
                 title: "Level 2: Seattle-Specific Rules & Hazardous Items", 
                 subtitle: "Learn what makes Seattle different + safety items",
+                location: "🏖️ Lake Union Shoreline Protection",
+                impact: "Lake Union drains into the Ship Canal, then Puget Sound, and finally the Pacific Ocean. Proper sorting here protects marine life including salmon returning to spawn, harbor seals, and endangered Southern Resident orcas that depend on clean waters!",
                 content: [
                     {
                         bin: "🍕 Food-Soiled Paper → Compost!",
@@ -908,13 +925,30 @@
                         bin: "🥄 Steel Spoon → Consider Donating!",
                         description: "Metal cutlery is too small for recycling machines. Better to donate reusable items than dispose.",
                         tip: "♻️ Most steel spoons don't need disposal—donate to extend their life!"
+                    },
+                    {
+                        bin: "📃 Multiple Options Available!",
+                        description: "Some items like shredded paper can go in multiple bins—both compost AND garbage are acceptable.",
+                        tip: "🌱 When multiple options exist, choose the most environmentally friendly option!"
                     }
                 ],
-                commonMistakes: "Common mistake: Assuming all similar items have the same rules—usage, contamination, and safety matter!"
+                commonMistakes: "Common mistake: Assuming all similar items have the same rules—usage, contamination, and safety matter!",
+                pointsHelp: "🌊 Every 10 points = 1 piece of debris prevented from entering Lake Union and harming marine life!",
+                haulerInfo: {
+                    title: "🚛 Seattle Waste & Recycling Services",
+                    description: "Seattle's waste collection is handled by these certified companies:",
+                    companies: [
+                        { name: "Waste Management (WM)", service: "Garbage & Recycling Collection", website: "wm.com" },
+                        { name: "Recology", service: "Garbage & Recycling Collection", website: "recology.com" },
+                        { name: "Cedar Grove", service: "Compost Processing", website: "cedar-grove.com" }
+                    ]
+                }
             },
             3: {
                 title: "Level 3: Complex Decisions & Hazardous Materials",
-                subtitle: "Master the most challenging sorting decisions", 
+                subtitle: "Master the most challenging sorting decisions",
+                location: "🏙️ Seattle Center Cultural District",
+                impact: "Seattle Center hosts 12+ million visitors annually for festivals, sports, and arts events. Proper waste sorting here showcases Seattle's environmental leadership to the world and keeps our cultural heart beautiful for events like Bumbershoot and New Year's celebrations!",
                 content: [
                     {
                         bin: "📱 Electronics → Hazardous Waste",
@@ -932,14 +966,24 @@
                         tip: "⚙️ Processing equipment has limitations—not everything that seems recyclable can be processed!"
                     }
                 ],
-                commonMistakes: "Common mistake: Assuming material type determines disposal—safety, contamination, and processing limitations matter more!"
+                commonMistakes: "Common mistake: Assuming material type determines disposal—safety, contamination, and processing limitations matter more!",
+                pointsHelp: "✨ Every 10 points = 1 area of Seattle Center kept pristine for millions of visitors to enjoy!",
+                haulerInfo: {
+                    title: "🚛 Seattle Waste & Recycling Services",
+                    description: "Seattle's waste collection is handled by these certified companies:",
+                    companies: [
+                        { name: "Waste Management (WM)", service: "Garbage & Recycling Collection", website: "wm.com" },
+                        { name: "Recology", service: "Garbage & Recycling Collection", website: "recology.com" },
+                        { name: "Cedar Grove", service: "Compost Processing", website: "cedar-grove.com" }
+                    ]
+                }
             }
         };
 
         // Waste items data (simplified for HTML)
         const wasteItems = [
             // Level 1 - Basic items (14 items)
-            { id: 1, name: 'Clean Plastic Water Bottle (#1-7)', type: 'recycling', emoji: '🍶', level: 1, explanation: 'Correct! Clean plastic bottles go in recycling—just rinse first!', wrongExplanation: 'Oops! Clean plastic bottles go in recycling, not garbage or compost.' },
+            { id: 1, name: 'Clean Plastic Water Bottle (#1-7)', type: 'recycling', emoji: '', level: 1, explanation: 'Correct! Clean plastic bottles go in recycling—just rinse first!', wrongExplanation: 'Oops! Clean plastic bottles go in recycling, not garbage or compost.' },
             { id: 2, name: 'Apple Core', type: 'compost', emoji: '🍎', level: 1, explanation: 'Correct! All fruit scraps become nutrient-rich compost in Seattle!', wrongExplanation: 'Oops! Food scraps like apple cores go in compost, not garbage or recycling.' },
             { id: 3, name: 'Used Tissue', type: 'garbage', emoji: '🤧', level: 1, explanation: 'Correct! Used tissues are contaminated—they always go to garbage.', wrongExplanation: 'Oops! Used tissues are contaminated and can\'t be recycled or composted.' },
             { id: 4, name: 'Clean Newspaper', type: 'recycling', emoji: '📰', level: 1, explanation: 'Correct! Clean paper gets recycled into new products!', wrongExplanation: 'Oops! Clean paper like newspapers goes in recycling.' },
@@ -953,22 +997,28 @@
             { id: 12, name: 'Flowers (No Plastic)', type: 'compost', emoji: '🌺', level: 1, explanation: 'Correct! Flowers are compostable—just remove plastic ties and cellophane!', wrongExplanation: 'Oops! Flowers go in compost, but remove any plastic wrapping first.' },
             { id: 13, name: 'Paper Towel (Unused)', type: 'compost', emoji: '', level: 1, explanation: 'Correct! Clean paper towels can be composted!', wrongExplanation: 'Oops! Unused paper towels go in compost, not garbage or recycling.' },
             { id: 14, name: 'Envelope (Clean)', type: 'recycling', emoji: '✉️', level: 1, explanation: 'Correct! Clean envelopes are recyclable paper!', wrongExplanation: 'Oops! Clean paper envelopes go in recycling.' },
+            { id: 47, name: 'Coffee Cup (Paper)', type: 'recycling', emoji: '☕', level: 1, explanation: 'Correct! Paper coffee cups are recyclable in Seattle—the plastic lining can be separated during processing!', wrongExplanation: 'Oops! Paper coffee cups go in recycling in Seattle, despite the plastic lining.' },
+            { id: 48, name: 'Juice Box (No Straw)', type: 'recycling', emoji: '🧃', level: 1, explanation: 'Correct! Juice boxes are recyclable cartons—just remove the straw first!', wrongExplanation: 'Oops! Juice boxes go in recycling, but remove the straw which goes to garbage.' },
             
             // Level 2 - Medium items (14 items)
             { id: 15, name: 'Greasy Pizza Box', type: 'compost', emoji: '', level: 2, explanation: 'Correct! Seattle\'s special rule: Cedar Grove accepts food-soiled paper in compost!', wrongExplanation: 'Oops! In Seattle, greasy pizza boxes go in compost—this is different from other cities!' },
             { id: 16, name: 'Coffee Grounds & Filter', type: 'compost', emoji: '', level: 2, explanation: 'Correct! Coffee grounds are amazing for compost—worms love them!', wrongExplanation: 'Oops! Coffee grounds and paper filters go in compost, not garbage.' },
-            { id: 17, name: 'Plastic Shopping Bag', type: 'garbage', emoji: '🛍️', level: 2, explanation: 'Correct! For curbside pickup, plastic bags go to garbage.', wrongExplanation: 'Oops! Plastic bags jam recycling machines. Take them to store drop-off bins instead!' },
+            { id: 17, name: 'Plastic Shopping Bag', type: 'garbage', emoji: '🛍️', level: 2, explanation: 'Correct! For curbside pickup, plastic bags go to garbage. However, many grocery stores collect clean plastic bags for separate recycling - find a location near you: http://plasticfilmrecycling.org', wrongExplanation: 'Oops! Plastic bags jam recycling machines in curbside pickup. They go to garbage, but you can take clean bags to grocery store drop-off bins! Visit http://plasticfilmrecycling.org to find locations.' },
             { id: 18, name: 'Chip Bag', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Chip bags are multi-layer packaging that goes to garbage.', wrongExplanation: 'Oops! Chip bags can\'t be recycled due to their foil lining.' },
             { id: 19, name: 'Non-Metallic Wrapping Paper', type: 'recycling', emoji: '🎁', level: 2, explanation: 'Correct! Non-metallic wrapping paper can be recycled!', wrongExplanation: 'Oops! Plain wrapping paper (no foil/glitter) goes in recycling.' },
             { id: 20, name: 'Small Bottle Cap (Loose)', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Loose bottle caps under 3" go to garbage—they jam machines!', wrongExplanation: 'Oops! Small loose caps go to garbage. Only attach caps to bottles for recycling.' },
-            { id: 22, name: 'Pumpkin (No Paint/Candle)', type: 'compost', emoji: '🎃', level: 2, explanation: 'Correct! Natural pumpkins are compostable—just remove paint and candles!', wrongExplanation: 'Oops! Clean pumpkins go in compost, but painted ones go to garbage.' },
+            { id: 22, name: 'Pumpkin (Unpainted)', type: 'compost', emoji: '🎃', level: 2, explanation: 'Correct! Unpainted pumpkins are compostable—just remove any candles or decorations!', wrongExplanation: 'Oops! Clean, unpainted pumpkins go in compost, but painted ones go to garbage.' },
             { id: 23, name: 'Wire Coat Hanger', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Wire hangers jam recycling machines and go to garbage.', wrongExplanation: 'Oops! Wire hangers tangle in recycling equipment—they go to garbage.' },
             { id: 24, name: 'Plastic Food Container (Clean)', type: 'recycling', emoji: '', level: 2, explanation: 'Correct! Clean plastic food containers are recyclable!', wrongExplanation: 'Oops! Clean plastic containers go in recycling.' },
             { id: 25, name: 'Tissue Paper (No Tape)', type: 'compost', emoji: '🎀', level: 2, explanation: 'Correct! Tissue paper can be composted—short fibers are fine!', wrongExplanation: 'Oops! Clean tissue paper goes in compost, but remove tape first.' },
             { id: 26, name: 'Cotton Balls', type: 'garbage', emoji: '☁️', level: 2, explanation: 'Correct! Cotton balls risk contamination—Cedar Grove doesn\'t accept them.', wrongExplanation: 'Oops! Cotton balls often have synthetic fibers or chemicals—they go to garbage.' },
             { id: 27, name: 'Steel Wool', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Steel wool is too small and contaminated for recycling.', wrongExplanation: 'Oops! Steel wool tangles in machines and is usually contaminated—garbage only.' },
-            { id: 28, name: 'Shredded Paper', type: 'garbage', emoji: '📃', level: 2, explanation: 'Correct! Cedar Grove doesn\'t accept shredded paper—risk of plastic contamination.', wrongExplanation: 'Oops! Shredded paper goes to garbage—too much contamination risk for compost.' },
+            { id: 28, name: 'Shredded Paper', type: ['compost', 'garbage'], emoji: '📃', level: 2, explanation: 'Correct! Shredded paper can go in compost OR garbage in Seattle—both are acceptable choices! See: https://www.seattle.gov/utilities/you-services/collection-and-disposal/where-does-it-go#item/shredded-paper', wrongExplanation: 'Oops! Shredded paper can go in either compost or garbage in Seattle—both are acceptable!' },
             { id: 29, name: 'Battery', type: 'hazardous', emoji: '🔋', level: 2, explanation: 'Correct! Batteries contain toxic chemicals and need hazardous waste disposal!', wrongExplanation: 'Oops! Batteries are hazardous—never put in regular bins!' },
+            { id: 49, name: 'Chewing Gum', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Chewing gum is not biodegradable and goes to garbage—never spit it on sidewalks!', wrongExplanation: 'Oops! Chewing gum doesn\'t break down and goes to garbage, not compost or recycling.' },
+            { id: 50, name: 'Plastic Straws', type: 'garbage', emoji: '', level: 2, explanation: 'Correct! Plastic straws are too small for recycling machines and go to garbage.', wrongExplanation: 'Oops! Plastic straws go to garbage—they\'re too small for recycling equipment.' },
+            { id: 51, name: 'Condiment Packets', type: 'garbage', emoji: '🍯', level: 2, explanation: 'Correct! Small condiment packets are multi-layer packaging that goes to garbage.', wrongExplanation: 'Oops! Condiment packets can\'t be recycled due to their small size and mixed materials.' },
+            { id: 52, name: 'Foil Drink Pouch (Capri Sun)', type: 'garbage', emoji: '🧃', level: 2, explanation: 'Correct! Foil drink pouches are multi-layer packaging that goes to garbage.', wrongExplanation: 'Oops! Foil drink pouches have mixed materials that can\'t be separated for recycling.' },
             
             // Level 3 - Hard items (15 items)
             { id: 31, name: 'CD/DVD', type: 'garbage', emoji: '💿', level: 3, explanation: 'Correct! CDs and DVDs go to garbage—the plastic is not recyclable.', wrongExplanation: 'Oops! CDs and DVDs can\'t be recycled in regular bins—they go to garbage.' },
@@ -988,19 +1038,22 @@
             { id: 46, name: 'Waxed Paper', type: 'garbage', emoji: '📜', level: 3, explanation: 'Correct! Wax and plastic coatings make this garbage.', wrongExplanation: 'Oops! Waxed/coated papers have synthetic materials—they go to garbage.' }
         ];
 
-        // Location messages
+        // Location messages with environmental impact
         const locationMessages = {
             1: {
                 text: "🏭 Gas Works Park needs your help! Sort the scattered waste correctly to clean up this iconic Seattle landmark! 🧹",
-                class: "level-1"
+                class: "level-1",
+                impact: "Gas Works Park sits on a former industrial site. Proper sorting prevents contamination and keeps this beloved 19-acre park safe for families and wildlife visiting the iconic gasification towers!"
             },
             2: {
                 text: "🏖️ Lake Union's beautiful shoreline has some litter! Help clean up this popular Seattle beach! 🌊",
-                class: "level-2"
+                class: "level-2", 
+                impact: "Lake Union connects to Puget Sound and the Pacific Ocean. Every piece of correctly sorted waste prevents marine pollution and protects salmon, seals, and orcas in Seattle's waters!"
             },
             3: {
                 text: "🏙️ Perfect! Seattle's city center with the Space Needle is clean and beautiful thanks to your expertise! ✨",
-                class: "level-3"
+                class: "level-3",
+                impact: "Seattle Center hosts millions of visitors yearly! Proper waste sorting at this cultural heart keeps our city beautiful and shows the world that Seattle leads in environmental stewardship!"
             }
         };
 
@@ -1075,6 +1128,69 @@
             let svgContent = '';
             
             switch(itemId) {
+                case 1: // Clean Plastic Water Bottles - Dasani and Evian style with proper bottle shape
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <!-- Evian bottle (back left) with proper water bottle shape -->
+                            <path d="M25 20 Q25 18 27 18 L33 18 Q35 18 35 20 L35 25 Q35 30 30 30 Q25 30 25 25 Z" 
+                                  fill="#0ea5e9" stroke="#0284c7" stroke-width="1"/>
+                            <path d="M20 25 Q20 23 25 23 L35 23 Q40 23 40 25 L42 35 Q42 40 40 40 L35 75 Q35 80 30 80 L25 80 Q20 80 20 75 L18 35 Q18 30 20 25 Z" 
+                                  fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2" opacity="0.9"/>
+                            
+                            <!-- Evian bottle ridges for texture -->
+                            <path d="M20 35 Q30 33 40 35" stroke="#0ea5e9" stroke-width="0.5" fill="none" opacity="0.7"/>
+                            <path d="M20 45 Q30 43 40 45" stroke="#0ea5e9" stroke-width="0.5" fill="none" opacity="0.7"/>
+                            <path d="M21 55 Q30 53 39 55" stroke="#0ea5e9" stroke-width="0.5" fill="none" opacity="0.7"/>
+                            
+                            <!-- Evian label -->
+                            <rect x="23" y="40" width="14" height="18" fill="#ec4899" stroke="#db2777" stroke-width="1" rx="2"/>
+                            <text x="30" y="46" text-anchor="middle" font-size="3" fill="white" font-weight="bold">evian</text>
+                            <text x="30" y="50" text-anchor="middle" font-size="2" fill="white" font-weight="bold">NATURAL</text>
+                            <text x="30" y="53" text-anchor="middle" font-size="2" fill="white" font-weight="bold">SPRING</text>
+                            <text x="30" y="56" text-anchor="middle" font-size="2" fill="white" font-weight="bold">WATER</text>
+                            
+                            <!-- Dasani bottle (front right) with proper water bottle shape -->
+                            <path d="M55 15 Q55 13 57 13 L63 13 Q65 13 65 15 L65 20 Q65 25 60 25 Q55 25 55 20 Z" 
+                                  fill="#3b82f6" stroke="#1d4ed8" stroke-width="1"/>
+                            <path d="M45 20 Q45 18 55 18 L65 18 Q75 18 75 20 L77 30 Q77 35 75 35 L75 40 Q77 42 77 45 L75 70 Q75 85 60 85 Q45 85 45 70 L43 45 Q43 42 45 40 L45 35 Q43 35 43 30 L45 20 Z" 
+                                  fill="#f8fafc" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <!-- Dasani bottle shoulder ridges -->
+                            <path d="M45 35 Q60 33 75 35" stroke="#3b82f6" stroke-width="0.5" fill="none" opacity="0.7"/>
+                            <path d="M45 42 Q60 40 75 42" stroke="#3b82f6" stroke-width="0.5" fill="none" opacity="0.7"/>
+                            
+                            <!-- Dasani bottle grip ridges -->
+                            <path d="M47 50 Q60 48 73 50" stroke="#3b82f6" stroke-width="0.5" fill="none" opacity="0.7"/>
+                            <path d="M47 55 Q60 53 73 55" stroke="#3b82f6" stroke-width="0.5" fill="none" opacity="0.7"/>
+                            <path d="M47 60 Q60 58 73 60" stroke="#3b82f6" stroke-width="0.5" fill="none" opacity="0.7"/>
+                            <path d="M47 65 Q60 63 73 65" stroke="#3b82f6" stroke-width="0.5" fill="none" opacity="0.7"/>
+                            
+                            <!-- Dasani label -->
+                            <rect x="50" y="45" width="20" height="15" fill="#1e40af" stroke="#1d4ed8" stroke-width="1" rx="2"/>
+                            <text x="60" y="50" text-anchor="middle" font-size="4" fill="white" font-weight="bold">DASANI</text>
+                            <text x="60" y="54" text-anchor="middle" font-size="2.5" fill="white" font-weight="bold">PURIFIED</text>
+                            <text x="60" y="57" text-anchor="middle" font-size="2.5" fill="white" font-weight="bold">WATER</text>
+                            
+                            <!-- Water effects inside bottles -->
+                            <ellipse cx="30" cy="50" rx="6" ry="12" fill="#e0f2fe" opacity="0.4"/>
+                            <ellipse cx="60" cy="55" rx="8" ry="15" fill="#dbeafe" opacity="0.4"/>
+                            
+                            <!-- Bottle highlights on shoulder -->
+                            <ellipse cx="26" cy="35" rx="2" ry="5" fill="#ffffff" opacity="0.8"/>
+                            <ellipse cx="56" cy="35" rx="3" ry="6" fill="#ffffff" opacity="0.8"/>
+                            
+                            <!-- Recycling symbols -->
+                            <circle cx="33" cy="30" r="3" fill="none" stroke="#22c55e" stroke-width="1"/>
+                            <text x="33" y="32" text-anchor="middle" font-size="2" fill="#22c55e" font-weight="bold">♻</text>
+                            <circle cx="68" cy="32" r="3" fill="none" stroke="#22c55e" stroke-width="1"/>
+                            <text x="68" y="34" text-anchor="middle" font-size="2" fill="#22c55e" font-weight="bold">♻</text>
+                            
+                            <!-- Clean indicator -->
+                            <rect x="15" y="90" width="70" height="6" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" rx="3"/>
+                            <text x="50" y="94" text-anchor="middle" font-size="3" fill="#16a34a" font-weight="bold">✓ CLEAN & EMPTY</text>
+                        </svg>`;
+                    break;
+                    
                 case 13: // Paper towel - Individual kitchen paper towel sheets
                     svgContent = `
                         <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 80 80">
@@ -1328,23 +1444,23 @@
                         </svg>`;
                     break;
                     
-                case 18: // Chip bag - Crispy Chips with foil lining
+                case 18: // Chip bag - More rectangular crispy chips bag with foil lining
                     svgContent = `
                         <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
-                            <path d="M30 15 Q35 10 50 10 Q65 10 70 15 L75 75 Q70 85 50 85 Q30 85 25 75 Z" fill="#ffd700" stroke="#b8860b" stroke-width="2"/>
-                            <path d="M32 17 Q37 12 50 12 Q63 12 68 17 L73 73 Q68 83 50 83 Q32 83 27 73 Z" fill="#c0c0c0" stroke="#a0a0a0" stroke-width="1"/>
-                            <rect x="40" y="20" width="20" height="15" fill="#dc2626" stroke="#b91c1c" stroke-width="2" rx="3"/>
-                            <text x="50" y="29" text-anchor="middle" font-size="6" fill="white" font-weight="bold">CRISPY</text>
-                            <text x="50" y="34" text-anchor="middle" font-size="5" fill="white" font-weight="bold">CHIPS</text>
-                            <line x1="35" y1="40" x2="65" y2="40" stroke="#e5e7eb" stroke-width="1" opacity="0.8"/>
-                            <line x1="33" y1="50" x2="67" y2="50" stroke="#e5e7eb" stroke-width="1" opacity="0.8"/>
-                            <line x1="34" y1="60" x2="66" y2="60" stroke="#e5e7eb" stroke-width="1" opacity="0.8"/>
-                            <path d="M35 45 Q40 43 45 45 Q50 47 55 45 Q60 43 65 45" stroke="#9ca3af" stroke-width="1" fill="none"/>
-                            <path d="M33 55 Q38 53 43 55 Q48 57 53 55 Q58 53 63 55" stroke="#9ca3af" stroke-width="1" fill="none"/>
-                            <path d="M36 65 Q41 63 46 65 Q51 67 56 65 Q61 63 66 65" stroke="#9ca3af" stroke-width="1" fill="none"/>
-                            <rect x="32" y="15" width="36" height="4" fill="#8b7355" stroke="#6d5d47" stroke-width="1"/>
-                            <rect x="70" y="25" width="15" height="8" fill="#fef2f2" stroke="#f87171" stroke-width="1" rx="2"/>
-                            <text x="77.5" y="30" text-anchor="middle" font-size="3" fill="#dc2626" font-weight="bold">FOIL</text>
+                            <rect x="25" y="15" width="50" height="70" fill="#ffd700" stroke="#b8860b" stroke-width="2" rx="8"/>
+                            <rect x="27" y="17" width="46" height="66" fill="#c0c0c0" stroke="#a0a0a0" stroke-width="1" rx="6"/>
+                            <rect x="35" y="25" width="30" height="15" fill="#dc2626" stroke="#b91c1c" stroke-width="2" rx="3"/>
+                            <text x="50" y="34" text-anchor="middle" font-size="7" fill="white" font-weight="bold">CRISPY</text>
+                            <text x="50" y="42" text-anchor="middle" font-size="6" fill="white" font-weight="bold">CHIPS</text>
+                            <line x1="30" y1="45" x2="70" y2="45" stroke="#e5e7eb" stroke-width="1" opacity="0.8"/>
+                            <line x1="30" y1="55" x2="70" y2="55" stroke="#e5e7eb" stroke-width="1" opacity="0.8"/>
+                            <line x1="30" y1="65" x2="70" y2="65" stroke="#e5e7eb" stroke-width="1" opacity="0.8"/>
+                            <path d="M30 50 Q35 48 40 50 Q45 52 50 50 Q55 48 60 50 Q65 52 70 50" stroke="#9ca3af" stroke-width="1" fill="none"/>
+                            <path d="M30 60 Q35 58 40 60 Q45 62 50 60 Q55 58 60 60 Q65 62 70 60" stroke="#9ca3af" stroke-width="1" fill="none"/>
+                            <path d="M30 70 Q35 68 40 70 Q45 72 50 70 Q55 68 60 70 Q65 72 70 70" stroke="#9ca3af" stroke-width="1" fill="none"/>
+                            <rect x="27" y="15" width="46" height="4" fill="#8b7355" stroke="#6d5d47" stroke-width="1"/>
+                            <rect x="77" y="30" width="18" height="8" fill="#fef2f2" stroke="#f87171" stroke-width="1" rx="2"/>
+                            <text x="86" y="35" text-anchor="middle" font-size="4" fill="#dc2626" font-weight="bold">FOIL LINING</text>
                         </svg>`;
                     break;
                     
@@ -1398,6 +1514,180 @@
                         </svg>`;
                     break;
                     
+                case 47: // Coffee cup (Starbucks style) - Paper cup with sleeve and logo
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <path d="M30 20 Q30 15 35 15 L65 15 Q70 15 70 20 L75 75 Q75 80 70 80 L30 80 Q25 80 25 75 Z" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+                            <rect x="28" y="35" width="44" height="25" fill="#0f5132" stroke="#0a3d26" stroke-width="1" rx="3"/>
+                            <circle cx="50" cy="47" r="8" fill="none" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="50" cy="47" r="6" fill="#ffffff"/>
+                            <text x="50" y="50" text-anchor="middle" font-size="6" fill="#0f5132" font-weight="bold">★</text>
+                            <ellipse cx="50" cy="15" rx="20" ry="3" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
+                            <path d="M45 65 Q50 70 55 65" stroke="#d1d5db" stroke-width="1" fill="none"/>
+                            <path d="M40 70 Q50 75 60 70" stroke="#d1d5db" stroke-width="1" fill="none"/>
+                            <rect x="35" y="25" width="30" height="3" fill="#8b7355" stroke="#6d5d47" stroke-width="1" rx="1"/>
+                            <text x="50" y="40" text-anchor="middle" font-size="4" fill="#ffffff" font-weight="bold">STARBUCKS</text>
+                            <text x="50" y="55" text-anchor="middle" font-size="4" fill="#ffffff" font-weight="bold">COFFEE</text>
+                        </svg>`;
+                    break;
+                    
+                case 48: // Juice box with straw next to it on ground - Tetrapak style
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <path d="M25 20 L25 70 Q25 75 30 75 L70 75 Q75 75 75 70 L75 20 L65 10 L35 10 Z" 
+                                  fill="#ffd700" stroke="#e6ac00" stroke-width="2"/>
+                            <path d="M35 10 L50 5 L65 10" fill="#ffd700" stroke="#e6ac00" stroke-width="2"/>
+                            <rect x="30" y="25" width="40" height="20" fill="#ff6b35" stroke="#cc4125" stroke-width="2" rx="3"/>
+                            <text x="50" y="33" text-anchor="middle" font-size="8" fill="white" font-weight="bold">ORANGE</text>
+                            <text x="50" y="41" text-anchor="middle" font-size="6" fill="white" font-weight="bold">JUICE</text>
+                            <circle cx="35" cy="60" r="2" fill="#e6ac00"/>
+                            <ellipse cx="50" cy="55" rx="15" ry="8" fill="#ffcc00" opacity="0.7"/>
+                            <text x="50" y="58" text-anchor="middle" font-size="5" fill="#cc4125" font-weight="bold">100% JUICE</text>
+                            <!-- Straw on the ground next to juice box -->
+                            <rect x="80" y="70" width="15" height="3" fill="#ff69b4" stroke="#e6578a" stroke-width="1" rx="1"/>
+                            <rect x="78" y="68" width="4" height="7" fill="#ff69b4" stroke="#e6578a" stroke-width="1" rx="1"/>
+                            <circle cx="85" cy="76" r="1" fill="#ff69b4"/>
+                            <circle cx="90" cy="76" r="1" fill="#ff69b4"/>
+                        </svg>`;
+                    break;
+                    
+                case 49: // Chewing gum - Person blowing a bubble
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <!-- Person's head -->
+                            <circle cx="35" cy="45" r="12" fill="#ffdbac" stroke="#e6c49a" stroke-width="2"/>
+                            <!-- Eyes -->
+                            <circle cx="31" cy="42" r="1.5" fill="#333"/>
+                            <circle cx="39" cy="42" r="1.5" fill="#333"/>
+                            <!-- Nose -->
+                            <circle cx="35" cy="46" r="0.8" fill="#e6c49a"/>
+                            <!-- Hair -->
+                            <path d="M25 38 Q35 25 45 38" fill="#8b4513" stroke="#654321" stroke-width="1"/>
+                            <!-- Mouth area -->
+                            <ellipse cx="35" cy="52" rx="3" ry="2" fill="#ff69b4"/>
+                            <!-- Giant pink bubble gum bubble -->
+                            <circle cx="55" cy="50" r="18" fill="#ffb3d9" stroke="#ff8cc8" stroke-width="2" opacity="0.9"/>
+                            <!-- Bubble highlight -->
+                            <ellipse cx="60" cy="45" rx="6" ry="4" fill="#ffffff" opacity="0.6"/>
+                            <!-- Smaller highlight -->
+                            <circle cx="65" cy="42" r="2" fill="#ffffff" opacity="0.8"/>
+                            <!-- Bubble connection to mouth -->
+                            <path d="M38 52 Q45 51 50 50" stroke="#ff8cc8" stroke-width="3" fill="none"/>
+                            <!-- Bubble texture lines -->
+                            <path d="M45 45 Q50 40 55 45" stroke="#ff99cc" stroke-width="1" fill="none" opacity="0.7"/>
+                            <path d="M50 55 Q55 60 60 55" stroke="#ff99cc" stroke-width="1" fill="none" opacity="0.7"/>
+                            <path d="M40 50 Q45 48 50 50" stroke="#ff99cc" stroke-width="1" fill="none" opacity="0.7"/>
+                            <!-- Warning label -->
+                            <rect x="15" y="75" width="70" height="12" fill="#fef2f2" stroke="#dc2626" stroke-width="1" rx="6"/>
+                            <text x="50" y="83" text-anchor="middle" font-size="6" fill="#dc2626" font-weight="bold">⚠ CHEWING GUM BUBBLE!</text>
+                            <!-- Small scattered gum pieces -->
+                            <circle cx="20" cy="25" r="2" fill="#ffb3d9" opacity="0.6"/>
+                            <circle cx="80" cy="30" r="1.5" fill="#ffb3d9" opacity="0.5"/>
+                            <circle cx="15" cy="70" r="1.2" fill="#ffb3d9" opacity="0.4"/>
+                        </svg>`;
+                    break;
+                    
+                case 50: // Plastic straws - Bundle of colorful plastic straws
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <!-- Multiple plastic straws in different colors -->
+                            <rect x="25" y="20" width="4" height="60" fill="#ff69b4" stroke="#e6578a" stroke-width="1" rx="2"/>
+                            <rect x="32" y="18" width="4" height="64" fill="#4169e1" stroke="#2c5aa0" stroke-width="1" rx="2"/>
+                            <rect x="39" y="22" width="4" height="56" fill="#32cd32" stroke="#228b22" stroke-width="1" rx="2"/>
+                            <rect x="46" y="20" width="4" height="60" fill="#ffd700" stroke="#daa520" stroke-width="1" rx="2"/>
+                            <rect x="53" y="19" width="4" height="62" fill="#ff4500" stroke="#cc3300" stroke-width="1" rx="2"/>
+                            <rect x="60" y="21" width="4" height="58" fill="#9932cc" stroke="#7b1fa2" stroke-width="1" rx="2"/>
+                            <rect x="67" y="20" width="4" height="60" fill="#ff1493" stroke="#cc1070" stroke-width="1" rx="2"/>
+                            
+                            <!-- Bendy sections for some straws -->
+                            <g stroke-width="0.5" fill="none">
+                                <line x1="27" y1="35" x2="27" y2="37" stroke="#ff69b4"/>
+                                <line x1="27" y1="39" x2="27" y2="41" stroke="#ff69b4"/>
+                                <line x1="34" y1="40" x2="34" y2="42" stroke="#4169e1"/>
+                                <line x1="34" y1="44" x2="34" y2="46" stroke="#4169e1"/>
+                                <line x1="48" y1="38" x2="48" y2="40" stroke="#ffd700"/>
+                                <line x1="48" y1="42" x2="48" y2="44" stroke="#ffd700"/>
+                                <line x1="55" y1="36" x2="55" y2="38" stroke="#ff4500"/>
+                                <line x1="55" y1="40" x2="55" y2="42" stroke="#ff4500"/>
+                                <line x1="69" y1="37" x2="69" y2="39" stroke="#ff1493"/>
+                                <line x1="69" y1="41" x2="69" y2="43" stroke="#ff1493"/>
+                            </g>
+                            
+                            <!-- Highlights on straws -->
+                            <rect x="26" y="25" width="1" height="50" fill="#ffffff" opacity="0.6"/>
+                            <rect x="33" y="23" width="1" height="54" fill="#ffffff" opacity="0.6"/>
+                            <rect x="40" y="27" width="1" height="46" fill="#ffffff" opacity="0.6"/>
+                            <rect x="47" y="25" width="1" height="50" fill="#ffffff" opacity="0.6"/>
+                            <rect x="54" y="24" width="1" height="52" fill="#ffffff" opacity="0.6"/>
+                            <rect x="61" y="26" width="1" height="48" fill="#ffffff" opacity="0.6"/>
+                            <rect x="68" y="25" width="1" height="50" fill="#ffffff" opacity="0.6"/>
+                            
+                            <!-- Warning label -->
+                            <rect x="10" y="85" width="80" height="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1" rx="5"/>
+                            <text x="50" y="92" text-anchor="middle" font-size="6" fill="#dc2626" font-weight="bold">PLASTIC STRAWS - TOO SMALL TO RECYCLE</text>
+                        </svg>`;
+                    break;
+                    
+                case 51: // Condiment packets - 3 rectangular packets (ketchup, mustard, mayo)
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <!-- Mustard packet (back left) -->
+                            <rect x="15" y="25" width="35" height="45" fill="#fbbf24" stroke="#f59e0b" stroke-width="2" rx="4" opacity="0.8"/>
+                            <rect x="20" y="35" width="25" height="15" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" rx="2"/>
+                            <text x="32.5" y="41" text-anchor="middle" font-size="4" fill="#f59e0b" font-weight="bold">FRENCH'S</text>
+                            <text x="32.5" y="46" text-anchor="middle" font-size="3" fill="#f59e0b" font-weight="bold">MUSTARD</text>
+                            
+                            <!-- Mayo packet (back right) -->
+                            <rect x="35" y="20" width="35" height="45" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" rx="4" opacity="0.8"/>
+                            <rect x="40" y="30" width="25" height="15" fill="#1e40af" stroke="#1d4ed8" stroke-width="1" rx="2"/>
+                            <text x="52.5" y="36" text-anchor="middle" font-size="4" fill="white" font-weight="bold">HELLMANN'S</text>
+                            <text x="52.5" y="41" text-anchor="middle" font-size="3" fill="white" font-weight="bold">MAYO</text>
+                            
+                            <!-- Ketchup packet (front center, main) -->
+                            <rect x="25" y="30" width="35" height="45" fill="#dc2626" stroke="#b91c1c" stroke-width="2" rx="4"/>
+                            <rect x="30" y="40" width="25" height="15" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" rx="2"/>
+                            <text x="42.5" y="46" text-anchor="middle" font-size="4" fill="#dc2626" font-weight="bold">HEINZ</text>
+                            <text x="42.5" y="51" text-anchor="middle" font-size="3" fill="#dc2626" font-weight="bold">KETCHUP</text>
+                            
+                            <!-- Crinkled edges for texture -->
+                            <line x1="25" y1="45" x2="60" y2="45" stroke="#b91c1c" stroke-width="0.5" opacity="0.5"/>
+                            <line x1="25" y1="65" x2="60" y2="65" stroke="#b91c1c" stroke-width="0.5" opacity="0.5"/>
+                            <line x1="15" y1="50" x2="50" y2="50" stroke="#f59e0b" stroke-width="0.5" opacity="0.5"/>
+                            <line x1="35" y1="40" x2="70" y2="40" stroke="#cbd5e1" stroke-width="0.5" opacity="0.5"/>
+                            
+                            <!-- Warning label -->
+                            <rect x="10" y="85" width="80" height="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1" rx="5"/>
+                            <text x="50" y="92" text-anchor="middle" font-size="4" fill="#dc2626" font-weight="bold">CONDIMENT PACKETS</text>
+                        </svg>`;
+                    break;
+                    
+                case 52: // Foil drink pouch (Sunkist/Capri Sun) - Thinner metallic foil pouch with straw
+                    svgContent = `
+                        <svg width="${svgSize}" height="${svgSize}" viewBox="0 0 100 100">
+                            <path d="M25 25 Q23 20 27 20 L73 20 Q77 20 75 25 L80 70 Q80 80 70 80 L30 80 Q20 80 20 70 Z" 
+                                  fill="#c0c0c0" stroke="#a0a0a0" stroke-width="2"/>
+                            <rect x="30" y="30" width="40" height="20" fill="#ff6b35" stroke="#cc4125" stroke-width="2" rx="3"/>
+                            <text x="50" y="38" text-anchor="middle" font-size="7" fill="white" font-weight="bold">SUNKIST</text>
+                            <text x="50" y="46" text-anchor="middle" font-size="5" fill="white" font-weight="bold">ORANGE</text>
+                            <ellipse cx="50" cy="60" rx="15" ry="8" fill="#ffcc00" opacity="0.8"/>
+                            <circle cx="45" cy="58" r="2.5" fill="#ff8c00" opacity="0.9"/>
+                            <circle cx="55" cy="62" r="2" fill="#ff8c00" opacity="0.9"/>
+                            <circle cx="50" cy="65" r="1.5" fill="#ff8c00" opacity="0.8"/>
+                            <path d="M25 25 L35 30 L40 25 L50 30 L55 25 L60 30 L70 25 L75 30" 
+                                  stroke="#d4d4d8" stroke-width="1" fill="none"/>
+                            <path d="M20 70 L30 65 L40 70 L50 65 L60 70 L70 65 L80 70" 
+                                  stroke="#d4d4d8" stroke-width="1" fill="none"/>
+                            <rect x="20" y="15" width="60" height="4" fill="#e5e7eb" stroke="#d1d5db" stroke-width="1" rx="2"/>
+                            <text x="50" y="17" text-anchor="middle" font-size="3" fill="#666" font-weight="bold">FOIL POUCH</text>
+                            <ellipse cx="35" cy="35" rx="2" ry="1" fill="#ffffff" opacity="0.6"/>
+                            <ellipse cx="65" cy="40" rx="1.5" ry="0.8" fill="#ffffff" opacity="0.6"/>
+                            <!-- Straw inserted in the pouch -->
+                            <rect x="58" y="20" width="3" height="25" fill="#ffff00" stroke="#e6e600" stroke-width="1" rx="1"/>
+                            <rect x="56" y="18" width="7" height="4" fill="#ffff00" stroke="#e6e600" stroke-width="1" rx="2"/>
+                            <circle cx="59.5" cy="22" r="1" fill="#ffffff" opacity="0.8"/>
+                        </svg>`;
+                    break;
+                    
                 default:
                     return null;
             }
@@ -1417,7 +1707,13 @@
         function setupEventListeners() {
             // Start/skip buttons
             document.getElementById('start-btn').addEventListener('click', hideLevelLesson);
-            document.getElementById('skip-btn').addEventListener('click', hideLevelLesson);
+            document.getElementById('skip-btn').addEventListener('click', function() {
+                if (gameState.reviewMode) {
+                    skipReview();
+                } else {
+                    hideLevelLesson();
+                }
+            });
             
             // Reset button
             document.getElementById('reset-btn').addEventListener('click', resetGame);
@@ -1449,8 +1745,17 @@
             // Update location message
             const messageData = locationMessages[gameState.level];
             const messageEl = document.getElementById('location-message');
-            messageEl.textContent = messageData.text;
-            messageEl.className = `location-message ${messageData.class}`;
+            
+            if (gameState.reviewMode) {
+                const remainingItems = gameState.reviewItems.filter(item => 
+                    gameState.wrongAnswers.has(item.id)
+                ).length;
+                messageEl.textContent = `📚 Review Mode: Practice your missed items! (${remainingItems} remaining)`;
+                messageEl.className = 'location-message level-1'; // Use level-1 styling for review
+            } else {
+                messageEl.textContent = messageData.text;
+                messageEl.className = `location-message ${messageData.class}`;
+            }
         }
 
         // Update background based on level
@@ -1458,10 +1763,13 @@
             const background = document.getElementById('background');
             const backgroundSvg = document.getElementById('background-svg');
             
-            background.className = `background level-${gameState.level}`;
+            // Ensure level is within valid range
+            const level = Math.min(Math.max(gameState.level, 1), 3);
+            
+            background.className = `background level-${level}`;
             
             let svgContent = '';
-            switch(gameState.level) {
+            switch(level) {
                 case 1:
                     svgContent = createLevel1Background();
                     break;
@@ -1481,10 +1789,28 @@
             const modal = document.getElementById('modal');
             const lesson = levelLessons[gameState.level];
             
+            // Safety check - if no lesson exists for this level, complete the game
+            if (!lesson) {
+                showGameComplete();
+                return;
+            }
+            
             document.getElementById('modal-title').textContent = lesson.title;
             document.getElementById('modal-subtitle').textContent = lesson.subtitle;
             
             let content = '';
+            
+            // Add location and environmental impact
+            if (lesson.location && lesson.impact) {
+                content += `
+                    <div class="lesson-item" style="background: #dbeafe; border-left: 4px solid #3b82f6;">
+                        <div class="lesson-bin">${lesson.location}</div>
+                        <div class="lesson-description">${lesson.impact}</div>
+                        <div class="lesson-tip">${lesson.pointsHelp}</div>
+                    </div>
+                `;
+            }
+            
             lesson.content.forEach(item => {
                 content += `
                     <div class="lesson-item">
@@ -1504,15 +1830,44 @@
                 `;
             }
             
+            // Add hauler information
+            if (lesson.haulerInfo) {
+                content += `
+                    <div class="lesson-item" style="background: #f0fdf4; border-left: 4px solid #16a34a;">
+                        <div class="lesson-bin">${lesson.haulerInfo.title}</div>
+                        <div class="lesson-description">${lesson.haulerInfo.description}</div>
+                `;
+                lesson.haulerInfo.companies.forEach(company => {
+                    content += `<div class="lesson-tip">• <strong>${company.name}:</strong> ${company.service} (${company.website})</div>`;
+                });
+                content += '</div>';
+            }
+            
             document.getElementById('modal-body').innerHTML = content;
             
             const startBtn = document.getElementById('start-btn');
             const skipBtn = document.getElementById('skip-btn');
             
-            startBtn.textContent = gameState.level === 1 ? 'Start Game!' : 'Continue Playing!';
+            startBtn.textContent = gameState.level === 1 ? 'Start Cleanup!' : 'Continue Cleanup!';
             skipBtn.classList.toggle('hidden', gameState.level === 1);
             
             modal.classList.remove('hidden');
+        }
+
+        // Get available items for current level or review
+        function getAvailableItems() {
+            if (gameState.reviewMode) {
+                // In review mode, only show items that are still in wrongAnswers
+                return gameState.reviewItems.filter(item => 
+                    gameState.wrongAnswers.has(item.id)
+                );
+            } else {
+                // Normal gameplay
+                return wasteItems.filter(item => 
+                    item.level <= gameState.level && 
+                    !gameState.completedItems.has(item.id)
+                );
+            }
         }
 
         // Hide level lesson modal
@@ -1520,15 +1875,225 @@
             document.getElementById('modal').classList.add('hidden');
             gameState.showingLesson = false;
             gameState.gameStarted = true;
+            
+            if (gameState.reviewMode) {
+                // Starting review mode (could be regular or final review)
+                gameState.completedItems = new Set(); // Reset completed items for review
+            }
+            
             getNextItem();
         }
 
-        // Get available items for current level
-        function getAvailableItems() {
-            return wasteItems.filter(item => 
-                item.level <= gameState.level && 
-                !gameState.completedItems.has(item.id)
+        // Check if level 3 is complete and handle review before game completion
+        function checkLevel3Complete() {
+            // Hide current item first
+            document.getElementById('current-item-container').classList.add('hidden');
+            
+            const wrongAnswersForLevel3 = Array.from(gameState.wrongAnswers).filter(id => {
+                const item = wasteItems.find(item => item.id === id);
+                return item && item.level <= 3; // All wrong answers from any level
+            });
+            
+            if (wrongAnswersForLevel3.length > 0) {
+                // Start final review mode before game completion
+                startFinalReview(wrongAnswersForLevel3);
+            } else {
+                // No wrong answers, complete the game
+                showGameComplete();
+            }
+        }
+
+        // Start final review mode before game completion
+        function startFinalReview(wrongItemIds) {
+            gameState.reviewMode = true;
+            gameState.reviewItems = wrongItemIds.map(id => wasteItems.find(item => item.id === id));
+            gameState.completedItems = new Set(); // Reset for review
+            
+            showFinalReviewModal();
+        }
+
+        // Show final review modal for Level 3
+        function showFinalReviewModal() {
+            const modal = document.getElementById('modal');
+            const wrongCount = gameState.reviewItems.length;
+            
+            document.getElementById('modal-title').textContent = 'Final Review Time!';
+            document.getElementById('modal-subtitle').textContent = `Perfect your Seattle waste sorting skills with ${wrongCount} items you missed`;
+            
+            let content = `
+                <div class="lesson-warning">
+                    <div class="warning-title">🎯 Final Challenge!</div>
+                    <div class="warning-text">You got ${wrongCount} items wrong during the game. Let's practice them one more time to become a true Seattle EcoSort expert!</div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-bin">🌟 Master Challenge</div>
+                    <div class="lesson-description">You'll only see the items you missed throughout all levels. Get them all right to achieve perfect mastery!</div>
+                    <div class="lesson-tip">💡 Remember what you learned from the feedback and take your time.</div>
+                </div>
+                <div class="lesson-item" style="background: #f0fdf4;">
+                    <div class="lesson-bin">⏭️ Your Choice</div>
+                    <div class="lesson-description">You can perfect your skills by practicing your mistakes, or skip to see your final results.</div>
+                    <div class="lesson-tip">🏆 Mastering your mistakes will make you a certified Seattle waste sorting expert!</div>
+                </div>
+            `;
+            
+            document.getElementById('modal-body').innerHTML = content;
+            
+            const startBtn = document.getElementById('start-btn');
+            const skipBtn = document.getElementById('skip-btn');
+            
+            startBtn.textContent = 'Perfect My Skills!';
+            skipBtn.textContent = 'Skip to Results';
+            skipBtn.classList.remove('hidden');
+            
+            modal.classList.remove('hidden');
+        }
+
+        // Check if final review is complete
+        function checkFinalReviewComplete() {
+            const remainingWrongAnswers = gameState.reviewItems.filter(item => 
+                gameState.wrongAnswers.has(item.id)
             );
+            
+            if (remainingWrongAnswers.length === 0) {
+                // All review items corrected!
+                gameState.reviewMode = false;
+                gameState.reviewItems = [];
+                
+                // Hide current item
+                document.getElementById('current-item-container').classList.add('hidden');
+                
+                showFeedback('success', 'Perfect! You\'ve mastered all Seattle waste sorting rules! 🌟', 0);
+                
+                setTimeout(() => {
+                    hideFeedback();
+                    showGameComplete();
+                }, 3000);
+            } else {
+                // Still have items to review, get the next one
+                getNextItem();
+            }
+        }
+
+        // Check if level is complete and handle review
+        function checkLevelComplete() {
+            // Hide current item first
+            document.getElementById('current-item-container').classList.add('hidden');
+            
+            const wrongAnswersForThisLevel = Array.from(gameState.wrongAnswers).filter(id => {
+                const item = wasteItems.find(item => item.id === id);
+                return item && item.level <= gameState.level;
+            });
+            
+            if (wrongAnswersForThisLevel.length > 0) {
+                // Start review mode
+                startReview(wrongAnswersForThisLevel);
+            } else {
+                // No wrong answers, advance to next level
+                levelUp();
+            }
+        }
+
+        // Start review mode
+        function startReview(wrongItemIds) {
+            gameState.reviewMode = true;
+            gameState.reviewItems = wrongItemIds.map(id => wasteItems.find(item => item.id === id));
+            gameState.completedItems = new Set(); // Reset for review
+            
+            showReviewModal();
+        }
+
+        // Check if review is complete
+        function checkReviewComplete() {
+            const remainingWrongAnswers = gameState.reviewItems.filter(item => 
+                gameState.wrongAnswers.has(item.id)
+            );
+            
+            if (remainingWrongAnswers.length === 0) {
+                // All review items corrected!
+                gameState.reviewMode = false;
+                gameState.reviewItems = [];
+                
+                // Hide current item
+                document.getElementById('current-item-container').classList.add('hidden');
+                
+                showFeedback('success', 'Excellent! You\'ve corrected all your mistakes! 🎉', 0);
+                
+                setTimeout(() => {
+                    hideFeedback();
+                    levelUp();
+                }, 3000);
+            } else {
+                // Still have items to review, get the next one
+                getNextItem();
+            }
+        }
+
+        // Show review modal
+        function showReviewModal() {
+            const modal = document.getElementById('modal');
+            const wrongCount = gameState.reviewItems.length;
+            
+            document.getElementById('modal-title').textContent = 'Level Review Time!';
+            document.getElementById('modal-subtitle').textContent = `Let's practice the ${wrongCount} items you missed`;
+            
+            let content = `
+                <div class="lesson-warning">
+                    <div class="warning-title">📚 Learning Opportunity!</div>
+                    <div class="warning-text">You got ${wrongCount} items wrong this level. Let's practice them again to make sure you understand Seattle's sorting rules!</div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-bin">🎯 Review Challenge</div>
+                    <div class="lesson-description">You'll only see the items you missed. Keep trying each item until you get it right!</div>
+                    <div class="lesson-tip">💡 Take your time and remember what you learned from the feedback.</div>
+                </div>
+                <div class="lesson-item" style="background: #f0fdf4;">
+                    <div class="lesson-bin">⏭️ Your Choice</div>
+                    <div class="lesson-description">You can practice your mistakes to master the rules, or skip review and move to the next level.</div>
+                    <div class="lesson-tip">🌟 Practicing mistakes helps you become a true Seattle waste sorting expert!</div>
+                </div>
+            `;
+            
+            document.getElementById('modal-body').innerHTML = content;
+            
+            const startBtn = document.getElementById('start-btn');
+            const skipBtn = document.getElementById('skip-btn');
+            
+            startBtn.textContent = 'Practice Mistakes!';
+            skipBtn.textContent = 'Skip to Next Level';
+            skipBtn.classList.remove('hidden');
+            
+            modal.classList.remove('hidden');
+        }
+
+        // Skip review and go directly to next level or game completion
+        function skipReview() {
+            gameState.reviewMode = false;
+            gameState.reviewItems = [];
+            gameState.wrongAnswers.clear();
+            document.getElementById('modal').classList.add('hidden');
+            
+            // Hide current item
+            document.getElementById('current-item-container').classList.add('hidden');
+            
+            // Check if this is final review or regular level review
+            if (gameState.level >= 3 && gameState.itemsCompleted >= 49) {
+                // Skip final review - go to game completion
+                showFeedback('success', 'Moving to final results! 🎉', 0);
+                
+                setTimeout(() => {
+                    hideFeedback();
+                    showGameComplete();
+                }, 2000);
+            } else {
+                // Skip regular level review - go to next level
+                showFeedback('success', 'Moving to next level! 🚀', 0);
+                
+                setTimeout(() => {
+                    hideFeedback();
+                    levelUp();
+                }, 2000);
+            }
         }
 
         // Get next random item
@@ -1536,8 +2101,16 @@
             const availableItems = getAvailableItems();
             
             if (availableItems.length === 0) {
-                // Game complete
-                showGameComplete();
+                // No more items available - game should be complete
+                if (!gameState.reviewMode && gameState.itemsCompleted >= 49) {
+                    showGameComplete();
+                } else if (gameState.reviewMode) {
+                    // All review items completed
+                    checkReviewComplete();
+                } else {
+                    // This shouldn't happen, but if it does, complete the game
+                    showGameComplete();
+                }
                 return;
             }
             
@@ -1600,47 +2173,92 @@
             if (!gameState.currentItem) return;
             
             const binType = this.getAttribute('data-type');
-            const isCorrect = gameState.currentItem.type === binType;
             
-            // Mark item as completed
-            gameState.completedItems.add(gameState.currentItem.id);
-            gameState.itemsCompleted++;
+            // Check if the item can go in multiple bins (like shredded paper)
+            let isCorrect = false;
+            if (Array.isArray(gameState.currentItem.type)) {
+                // Item can go in multiple bins
+                isCorrect = gameState.currentItem.type.includes(binType);
+            } else {
+                // Item has only one correct bin
+                isCorrect = gameState.currentItem.type === binType;
+            }
             
             if (isCorrect) {
                 const points = Math.round(10 * (1 + gameState.streak * 0.5));
                 gameState.score += points;
                 gameState.streak++;
                 showFeedback('success', gameState.currentItem.explanation, points);
+                
+                // Mark item as completed and remove from wrong answers if in review mode
+                gameState.completedItems.add(gameState.currentItem.id);
+                if (gameState.reviewMode) {
+                    gameState.wrongAnswers.delete(gameState.currentItem.id);
+                }
+                
+                // Only increment items completed in normal mode
+                if (!gameState.reviewMode) {
+                    gameState.itemsCompleted++;
+                }
             } else {
                 gameState.streak = 0;
                 showFeedback('error', gameState.currentItem.wrongExplanation, 0);
+                
+                // Track wrong answers only in normal mode
+                if (!gameState.reviewMode) {
+                    gameState.wrongAnswers.add(gameState.currentItem.id);
+                    gameState.completedItems.add(gameState.currentItem.id);
+                    gameState.itemsCompleted++;
+                } else {
+                    // In review mode, don't mark as completed if wrong - let them try again
+                    showFeedback('error', gameState.currentItem.wrongExplanation + ' Try again!', 0);
+                }
             }
             
             updateUI();
             
-            // Check for level up
-            if ((gameState.itemsCompleted === 14 && gameState.level === 1) || 
-                (gameState.itemsCompleted === 28 && gameState.level === 2)) {
-                levelUp();
-            }
-            
-            // Hide current item
+            // Hide current item immediately
             document.getElementById('current-item-container').classList.add('hidden');
             
-            // Get next item after delay
-            setTimeout(() => {
-                hideFeedback();
-                if (gameState.itemsCompleted === 43) {
-                    showGameComplete();
-                } else if (gameState.showingLesson) {
-                    // Wait for lesson to complete
-                } else {
-                    getNextItem();
-                }
-            }, 2500);
+            // Check for level completion or review completion
+            const levelCompleteAt = gameState.level === 1 ? 16 : gameState.level === 2 ? 34 : 49;
+            
+            if (gameState.reviewMode) {
+                // Check if review is complete - use appropriate function based on level
+                setTimeout(() => {
+                    hideFeedback();
+                    if (gameState.level >= 3 && gameState.itemsCompleted >= 49) {
+                        checkFinalReviewComplete();
+                    } else {
+                        checkReviewComplete();
+                    }
+                }, 2500);
+            } else if (gameState.itemsCompleted >= 49) {
+                // Level 3 complete - check for mistakes before finishing game
+                gameState.showingLesson = true; // Prevent new items immediately
+                setTimeout(() => {
+                    hideFeedback();
+                    checkLevel3Complete();
+                }, 2500);
+            } else if (gameState.itemsCompleted === levelCompleteAt) {
+                // Level complete - start level up sequence
+                gameState.showingLesson = true; // Prevent new items immediately
+                setTimeout(() => {
+                    hideFeedback();
+                    checkLevelComplete();
+                }, 2500);
+            } else {
+                // Continue with current level
+                setTimeout(() => {
+                    hideFeedback();
+                    if (!gameState.showingLesson) {
+                        getNextItem();
+                    }
+                }, 2500);
+            }
         }
 
-        // Show feedback
+        // Show feedback with occasional environmental impact
         function showFeedback(type, message, points) {
             const feedback = document.getElementById('feedback');
             const icon = document.getElementById('feedback-icon');
@@ -1651,7 +2269,20 @@
             feedback.className = `feedback ${type}`;
             icon.textContent = type === 'success' ? '✅' : '❌';
             title.textContent = type === 'success' ? 'Correct!' : 'Incorrect!';
-            messageEl.textContent = message;
+            
+            // Add environmental impact message occasionally for correct answers
+            let displayMessage = message;
+            if (type === 'success' && points > 0 && Math.random() < 0.3) { // 30% chance
+                const locationData = locationMessages[gameState.level];
+                const impactMessages = {
+                    1: "🏭 Great job! You're helping keep Gas Works Park's historic grounds clean and safe!",
+                    2: "🌊 Excellent! You're protecting Lake Union's marine life and water quality!",
+                    3: "✨ Perfect! You're keeping Seattle Center beautiful for millions of visitors!"
+                };
+                displayMessage += ` ${impactMessages[gameState.level]}`;
+            }
+            
+            messageEl.textContent = displayMessage;
             
             if (type === 'success' && points > 0) {
                 pointsEl.textContent = `+${points} points!`;
@@ -1671,6 +2302,12 @@
 
         // Level up
         function levelUp() {
+            // Check if we've completed all levels
+            if (gameState.level >= 3) {
+                showGameComplete();
+                return;
+            }
+            
             gameState.level++;
             gameState.showingLesson = true;
             
@@ -1687,7 +2324,7 @@
             }, 3000);
         }
 
-        // Show game complete
+        // Show game complete with environmental impact summary
         function showGameComplete() {
             const feedback = document.getElementById('feedback');
             const icon = document.getElementById('feedback-icon');
@@ -1698,8 +2335,24 @@
             
             feedback.className = 'feedback success';
             icon.textContent = '🎉';
-            title.textContent = 'Game Complete!';
-            messageEl.textContent = 'Congratulations! You\'ve mastered Seattle waste sorting with all 43 items!';
+            title.textContent = 'Seattle Cleanup Complete!';
+            
+            // Calculate environmental impact
+            const itemsCleaned = Math.floor(gameState.score / 10);
+            const masteryText = gameState.wrongAnswers.size === 0 ? 
+                "Perfect mastery achieved! " : 
+                "Great job! ";
+                
+            const impactMessage = `${masteryText}You've completed Seattle waste sorting with all 49 items! 
+            
+            🌍 Your Environmental Impact:
+            • Gas Works Park: ${Math.floor(itemsCleaned * 0.33)} pieces of litter removed
+            • Lake Union: ${Math.floor(itemsCleaned * 0.33)} pieces prevented from entering water
+            • Seattle Center: ${Math.floor(itemsCleaned * 0.34)} areas kept pristine
+            
+            You're now a certified Seattle EcoSort expert! 🌱`;
+            
+            messageEl.textContent = impactMessage;
             
             finalScoreEl.textContent = gameState.score;
             gameCompleteEl.classList.remove('hidden');
@@ -1715,8 +2368,11 @@
                 itemsCompleted: 0,
                 currentItem: null,
                 completedItems: new Set(),
+                wrongAnswers: new Set(),
                 gameStarted: false,
-                showingLesson: true
+                showingLesson: true,
+                reviewMode: false,
+                reviewItems: []
             };
             
             hideFeedback();
@@ -1733,4 +2389,3 @@
     </script>
 </body>
 </html>
-        }
